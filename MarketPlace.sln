@@ -5,13 +5,15 @@ VisualStudioVersion = 17.8.34330.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0449357A-C66C-46D1-B6AA-3FD4DD6CE2F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Domain", "src\MarketPlace.Domain\MarketPlace.Domain.csproj", "{56C6335B-D80A-4270-B7F8-49CDCA6AB568}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace.Domain", "src\MarketPlace.Domain\MarketPlace.Domain.csproj", "{56C6335B-D80A-4270-B7F8-49CDCA6AB568}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Application", "src\MarketPlace.Application\MarketPlace.Application.csproj", "{D57D930C-6E23-4918-9E98-5E4D3F21DE94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace.Application", "src\MarketPlace.Application\MarketPlace.Application.csproj", "{D57D930C-6E23-4918-9E98-5E4D3F21DE94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.Infrastructure", "src\MarketPlace.Infrastructure\MarketPlace.Infrastructure.csproj", "{2E04DD79-CDCB-488B-9991-9D48F348EEF5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace.Infrastructure", "src\MarketPlace.Infrastructure\MarketPlace.Infrastructure.csproj", "{2E04DD79-CDCB-488B-9991-9D48F348EEF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MarketPlace.WebUI", "src\MarketPlace.WebUI\MarketPlace.WebUI.csproj", "{9747F00A-C632-49E5-B238-E2D88704D03B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MarketPlace.WebUI", "src\MarketPlace.WebUI\MarketPlace.WebUI.csproj", "{9747F00A-C632-49E5-B238-E2D88704D03B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FilesWithLogs", "FilesWithLogs", "{0D436B25-3231-44B1-A06C-151B4BFF6FF9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
