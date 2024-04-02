@@ -12,7 +12,7 @@ namespace CrudOperationsTest
         [Fact]
         public void Test2()
         {
-            var actual = Add(3, 2);
+            var actual = Add(2, 2);
             Assert.Equal(4, actual);
         }
 
