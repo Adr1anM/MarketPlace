@@ -1,4 +1,5 @@
 ﻿using MarketPlace.Application.FileServices;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,14 @@ namespace MarketPlace.Infrastructure.FileSystem
 {
     public class FileService : IFileService
     {
-        private const string DirectoryPath = @"D:\Amdaris\InternshipProject\MarketPlace\FilesWithLogs";
-        private string Filename = $"Logs_{DateTime.Now:yyyyMMdd}.txt";
-
+        private readonly IConfiguration _configuration;
+        private static DateTime currTime;
+        
+        public FileService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+      
         public async Task<string> GetFile(string path)
         {
            
@@ -30,9 +36,13 @@ namespace MarketPlace.Infrastructure.FileSystem
 
         public async Task SaveToFile(string message)
         {
-            string filePath = Path.Combine(DirectoryPath, Filename);
+            string Filename = $"Logs_{currTime:yyyyMMdd}.txt";
 
-            await Task.Run(() => Directory.CreateDirectory(DirectoryPath));
+            string path = _configuration.GetValue<string>("FileDirectories:LogFilePath")!;
+            string filePath = Path.Combine(path, Filename);
+            
+
+            await Task.Run(() => Directory.CreateDirectory(path));
 
 
             using (StreamWriter writer = File.AppendText(filePath))

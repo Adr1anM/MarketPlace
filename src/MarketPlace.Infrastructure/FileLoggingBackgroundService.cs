@@ -1,6 +1,7 @@
 ﻿using MarketPlace.Application;
 using MarketPlace.Application.FileServices;
 using MarketPlace.Infrastructure.FileSystem;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -14,13 +15,15 @@ public class FileLoggingBackgroundService : BackgroundService
     private readonly IFileService _fileHandlerService;
     private readonly IFileLogger _fileLogger;
     private readonly IServiceScopeFactory _scopeFactoryService;
+    private readonly IConfiguration _configuration;
 
-    public FileLoggingBackgroundService(ILogger<FileLoggingBackgroundService> logger, IFileService fileHandlerService, IFileLogger fileLogger, IServiceScopeFactory scopedfactory)
+    public FileLoggingBackgroundService(ILogger<FileLoggingBackgroundService> logger, IFileService fileHandlerService, IFileLogger fileLogger, IServiceScopeFactory scopedfactory, IConfiguration configuration)
     {
         _logger = logger;
         _fileHandlerService = fileHandlerService;
         _fileLogger = fileLogger;
-        _scopeFactoryService = scopedfactory;  
+        _scopeFactoryService = scopedfactory;
+        _configuration = configuration;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -34,7 +37,7 @@ public class FileLoggingBackgroundService : BackgroundService
                     var fileService = scope.ServiceProvider.GetRequiredService<IFileService>();
                     var fileLogger = scope.ServiceProvider.GetRequiredService<IFileLogger>();
 
-                    bool result = await CompareTofileData("Working with files");
+                    bool result = await CompareTofileData("sadasda");
                    
                     if (result)
                     {
@@ -62,7 +65,7 @@ public class FileLoggingBackgroundService : BackgroundService
         {
             var fileService = scope.ServiceProvider.GetRequiredService<IFileService>();
 
-            string path = @"C:\Users\andri\OneDrive\Desktop\TestFile.txt";
+            string path = _configuration.GetValue<string>("FileDirectories:TextFilePath")!;
             string data = await fileService.GetFile(path);
 
             if (data.Contains(template))
