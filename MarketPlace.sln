@@ -17,11 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FilesWithLogs", "FilesWithL
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4D7DB571-37E1-4435-936F-041B6BAC2B53}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application.UnitTests", "tests\Application.UnitTests\Application.UnitTests.csproj", "{F2719D8C-07AB-4E16-8281-AE6280EE7C4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application.UnitTests", "tests\Application.UnitTests\Application.UnitTests.csproj", "{F2719D8C-07AB-4E16-8281-AE6280EE7C4F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebUi.Tests", "tests\WebUi.Tests\WebUi.Tests.csproj", "{49932576-931D-4F2B-88AE-1C0337BACFEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebUi.Tests", "tests\WebUi.Tests\WebUi.Tests.csproj", "{49932576-931D-4F2B-88AE-1C0337BACFEF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.UnitTests", "tests\Domain.UnitTests\Domain.UnitTests.csproj", "{EDDF9D55-1C23-4459-BC51-6597BDD05CF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.UnitTests", "tests\Domain.UnitTests\Domain.UnitTests.csproj", "{EDDF9D55-1C23-4459-BC51-6597BDD05CF8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
