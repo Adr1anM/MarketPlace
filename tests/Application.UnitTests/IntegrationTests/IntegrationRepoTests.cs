@@ -30,25 +30,6 @@ namespace Application.UnitTests
             Assert.Contains(entityToAdd, actualList);
         }
 
-        //[Fact]
-        //public void Add_Empty_Objct_Should_NotAdd_Entity_To_Repository()
-        //{
-        //    // Arrange
-        //    var repository = new InMemoryRepository<BaseArtProduct>();
-        //    var entityToAdd = new Paint { Id = 1, Artist = "Mark Zuckerberg", InchSize = 30, Title = "Modernistic", Price = 2000, PaintingMaterial = "Stofa" };
-
-        //    // Get the initial count before adding the entity
-        //    var initialCount = repository.GetAll().Count();
-
-        //    // Act
-        //    repository.Add(entityToAdd);
-
-        //    // Assert
-
-        //    var finalCount = repository.GetAll().Count();
-
-        //    Assert.Equal(initialCount + 1, finalCount);
-        //}
 
         [Fact]
         public void Update_Should_Update_Entity_Price_In_Repository()
@@ -128,9 +109,6 @@ namespace Application.UnitTests
         [Fact]
         public void GetById_Doesnt_Return_Entity_With_Specified_Id()
         {
-            // Arrange
-            var entityToReturn = new Paint { Id = 1, Artist = "Mark Zuckerberg", InchSize = 30, Title = "Modernistic", Price = 2000, PaintingMaterial = "Stofa" };
-   
             // Assert
             Assert.Throws<KeyNotFoundException>(() => _repository.GetById(2));
         }

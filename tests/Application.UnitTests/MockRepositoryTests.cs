@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace Application.UnitTests
 {
-    public class RepositoryTests
+    public class MockRepositoryTests
     {
         private readonly Mock<IRepository<Paint>> _mockRepository;
         private readonly IRepository<Paint> _repository;
 
-        public RepositoryTests()
+        public MockRepositoryTests()
         {
             _mockRepository = new Mock<IRepository<Paint>>();
             _repository = _mockRepository.Object;
@@ -31,10 +31,10 @@ namespace Application.UnitTests
             _mockRepository.Setup(r => r.GetAll()).Returns(new List<Paint> { entityToAdd });
 
             // Act
-            _repository.Update(entityToAdd);
+            _repository.Add(entityToAdd);
 
             // Verify
-            _mockRepository.Verify(r => r.Update(
+            _mockRepository.Verify(r => r.Add(
                 It.Is<Paint>(p =>
                     p.Id == entityToAdd.Id &&
                     p.Artist == entityToAdd.Artist &&
@@ -46,7 +46,7 @@ namespace Application.UnitTests
             ), Times.Once);
 
             var result = _repository.GetAll().ToList() ;
-
+     
             Assert.Contains(entityToAdd, result);
         }
 
@@ -90,8 +90,10 @@ namespace Application.UnitTests
             // Act
             _repository.Delete(entityToDelete.Id);
 
-            // Assert
+
             _mockRepository.Verify(r => r.Delete(entityToDelete.Id), Times.Once);
+            // Assert
+
 
             var entityAfterDeletion = _repository.GetById(entityToDelete.Id);
             Assert.Null(entityAfterDeletion);
@@ -141,6 +143,7 @@ namespace Application.UnitTests
             var entityWithDuplicateId = new Paint { Id = 1, Artist = "Van Gogh", InchSize = 25, Title = "Starry Night", Price = 2000, PaintingMaterial = "Oil" };
 
             Assert.Throws<InvalidOperationException>(() => _repository.Add(entityWithDuplicateId));
+
         }
     
     }
