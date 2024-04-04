@@ -9,6 +9,6 @@ namespace MarketPlace.Domain.Models
     public class Sculpture : BaseArtProduct
     {
         public string Material { get; set; }
-        public string Weight { get; set; }  
+        public double Weight { get; set; }  
     }
 }

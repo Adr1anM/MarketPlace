@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Domain.Models
 {
-    public class Categories
+    public class Artizan : BaseArtProduct
     {
-        public Post PostInCategories { get; set; }
+        public string Material { get; set; }
     }
 }

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MarketPlace.Domain.Models
+namespace MarketPlace.Application.Photographies.Delete
 {
-    public class Categories
+    public class DeletePhotography
     {
-        public Post PostInCategories { get; set; }
     }
 }
