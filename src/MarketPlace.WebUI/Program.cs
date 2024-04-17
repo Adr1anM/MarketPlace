@@ -1,18 +1,19 @@
-using MarketPlace.Application.Abstractions;
+//using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.FileServices;
 using MarketPlace.Infrastructure.FileSystem;
-using MarketPlace.Infrastructure.Repositories;
+using MarketPlace.WebUI.Extentions;
+//using MarketPlace.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.AddServices();
 builder.Services.AddTransient<IFileService, FileService>();
 builder.Services.AddTransient<IFileLogger, FileLogger>();
-builder.Services.AddSingleton<IPaintRepository,PaintRepository>();
+/*builder.Services.AddSingleton<IPaintRepository,PaintRepository>();
 builder.Services.AddSingleton<ISculptureRepository,SculptureRepository>();
-builder.Services.AddSingleton<IPhotographyRepository,PhotographyRepository>();
-builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(IPhotographyRepository).Assembly));
+builder.Services.AddSingleton<IPhotographyRepository,PhotographyRepository>();*/
+/*builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(IPhotographyRepository).Assembly));*/
 builder.Services.AddHostedService<FileLoggingBackgroundService>();
 
 

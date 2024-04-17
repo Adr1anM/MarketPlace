@@ -1,4 +1,4 @@
-﻿using MarketPlace.Application.Abstractions;
+﻿/*using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.Photographies.Responses;
 using MarketPlace.Domain.Models;
 using MediatR;
@@ -36,3 +36,4 @@ namespace MarketPlace.Application.Photographies.Create
     }
 
 }
+*/

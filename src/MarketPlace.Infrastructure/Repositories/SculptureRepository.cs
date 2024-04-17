@@ -1,4 +1,4 @@
-﻿using MarketPlace.Application.Abstractions;
+﻿/*using MarketPlace.Application.Abstractions;
 using MarketPlace.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -44,3 +44,4 @@ namespace MarketPlace.Infrastructure.Repositories
         }
     }
 }
+*/
