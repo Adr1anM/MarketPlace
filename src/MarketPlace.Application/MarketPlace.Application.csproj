@@ -26,8 +26,8 @@
 
   <ItemGroup>
     <Folder Include="Artizans\" />
-    <Folder Include="Paints\Delete\" />
-    <Folder Include="Paints\Update\" />
+    <Folder Include="Products\Delete\" />
+    <Folder Include="Products\Update\" />
     <Folder Include="Sculptures\Delete\" />
     <Folder Include="Sculptures\Update\" />
   </ItemGroup>

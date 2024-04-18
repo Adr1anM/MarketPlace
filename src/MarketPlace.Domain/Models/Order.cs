@@ -20,9 +20,10 @@ namespace MarketPlace.Domain.Models
         public Promocode Promocode { get; set; }
         public int Quantity { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(200)]
         public string ShippingAdress { get; set; }
-        public int Status { get; set; }
+        public int StatusId { get; set; }
+        public OrderStatus Status { get; set; }
 
         [Column(TypeName = "decimal(5, 2)")]
         public decimal TotalPrice { get; set; }

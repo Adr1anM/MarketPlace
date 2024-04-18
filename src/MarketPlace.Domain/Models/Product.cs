@@ -13,13 +13,14 @@ namespace MarketPlace.Domain.Models
         [MaxLength(100)]
         public string Title { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(300)]
         public string Description { get; set; }
-        public int CategorieID { get; set; }
+        public int CategoryID { get; set; }
         public Category Category { get; set; } 
         public int AuthorId { get; set; }    
         public Author Author { get; set; }
-            
+        public int Quantity { get; set; }
+
         [Column(TypeName = "decimal(5, 2)")]
         public decimal Price { get; set; }
         public DateTime CreatedDate { get; set; }

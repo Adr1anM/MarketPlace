@@ -13,7 +13,7 @@ namespace MarketPlace.Domain.Models
         public int UserId { get; set; }  
         public User User { get; set; }
 
-        [MaxLength(100)]
+        [MaxLength(400)]
         public string Biography { get; set; }
 
         [MaxLength(100)]
