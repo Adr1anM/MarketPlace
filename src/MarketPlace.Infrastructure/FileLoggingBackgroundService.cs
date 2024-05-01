@@ -1,5 +1,5 @@
-﻿using MarketPlace.Application;
-using MarketPlace.Application.FileServices;
+﻿/*using MarketPlace.Application;
+using MarketPlace.Application.Abstractions.App.FileServices;
 using MarketPlace.Infrastructure.FileSystem;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -83,3 +83,4 @@ public class FileLoggingBackgroundService : BackgroundService
         await base.StopAsync(cancellationToken);
     }
 }
+*/

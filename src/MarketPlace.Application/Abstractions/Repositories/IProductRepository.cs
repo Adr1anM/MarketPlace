@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.Abstractions.Repositories
 {
-    public interface IProductRepository
+    public interface IProductRepository : IGenericRepository<Product>
     {
-        Task<Product> GetProductByAuthor(Author author);
-        Task<Product> GetProductByCategory(Category category);
+        Task<Product> GetProductByAuthorId(int authorId);
+        Task<Product> GetProductByCategoryId(int categoryId);
         Product UpdateCreatedDate(int id , DateTime date);
+        Task<List<Product>> GetPagedResult(int pageNum, int pagesize);
     }
 }

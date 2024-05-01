@@ -8,8 +8,8 @@ namespace MarketPlace.Domain.Models.Enums
 {
     public class OrderStatus
     {
-        public int Id { get; }
-        public string Status { get; }
+        public int Id { get; set; }
+        public string Status { get; set; }
 
         private OrderStatus(int id, string status)
         {

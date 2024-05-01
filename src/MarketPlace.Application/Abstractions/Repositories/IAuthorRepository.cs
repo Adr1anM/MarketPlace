@@ -2,16 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MarketPlace.Application.Abstractions.Repositories
 {
-    public interface IAuthorRepository
+    public interface IAuthorRepository : IGenericRepository<Author> 
     {
-
-        Task<Author> GetAuthorByCountry(string country);
-        Task<List<Author>> GetAllAuthorsByCountry(string country);
-        Task<Author> GetAuthorByBirthDate(Author author);
+        Task<List<Author>> GetAllAuthorsWhere(Expression<Func<Author, bool>> expresionPredicate);
+        Task<Author> GetAuthorWhere(Expression<Func<Author, bool>> expresionPredicate);
     }
 }

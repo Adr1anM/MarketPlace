@@ -18,9 +18,9 @@ namespace MarketPlace.Infrastructure.Repositories
                 
         }
 
-        public async Task<Product> GetProductByAuthor(Author author)
+        public async Task<Product> GetProductByAuthorId(int authorId)
         {
-            var result =  await _context.Products.FirstOrDefaultAsync(p => p.AuthorId == author.Id);
+            var result =  await _context.Products.FirstOrDefaultAsync(p => p.AuthorId == authorId);
 
             if(result is null)
             {
@@ -30,9 +30,9 @@ namespace MarketPlace.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<Product> GetProductByCategory(Category category)
+        public async Task<Product> GetProductByCategoryId(int categoryId)
         {
-            return await _context.Products.FirstOrDefaultAsync(p => p.CategoryID == category.Id);
+            return await _context.Products.FirstOrDefaultAsync(p => p.CategoryID == categoryId);
         }
 
         public Product UpdateCreatedDate(int id,DateTime date)
@@ -50,5 +50,12 @@ namespace MarketPlace.Infrastructure.Repositories
             return result;  
         }
 
+        public async Task<List<Product>> GetPagedResult(int pageNumb, int pagesize)
+        {
+            return await _context.Products
+                    .Skip((pageNumb - 1) * pagesize)
+                    .Take(pagesize)
+                    .ToListAsync();
+        }
     }
 }

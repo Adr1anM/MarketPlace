@@ -20,7 +20,7 @@ namespace MarketPlace.Infrastructure.Repositories
 
         public async Task<Order> GetOrderByUserId(int userId)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(p => p.Buyer.Id == userId);
+            var order = await _context.Orders.FirstOrDefaultAsync(p => p.CretedById == userId);
 
             if(order == null)
             {

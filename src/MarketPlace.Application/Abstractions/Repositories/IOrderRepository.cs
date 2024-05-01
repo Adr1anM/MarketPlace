@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.Abstractions.Repositories
 {
-    public interface IOrderRepository
+    public interface IOrderRepository : IGenericRepository<Order>   
     {
         Task<Order> GetOrderByUserId(int userId);
     }

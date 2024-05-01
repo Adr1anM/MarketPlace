@@ -1,4 +1,5 @@
 ﻿using MarketPlace.Application;
+using MarketPlace.Application.Abstractions.Repositories;
 using MarketPlace.Domain.Models;
 using MarketPlace.Infrastructure.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
@@ -6,59 +7,73 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MarketPlace.Infrastructure.Repositories
 {
-    public abstract class GenericRepository<TEntity> where TEntity : Entity
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : Entity
     {
         protected readonly ArtMarketPlaceDbContext _context;
 
-        protected GenericRepository(ArtMarketPlaceDbContext context)
+        public GenericRepository(ArtMarketPlaceDbContext context)
         {
             _context = context;
-        }
+        }   
 
-        public async Task Add(TEntity entity)
+        public virtual async Task<TEntity> GetByIdAsync(int id)
         {
-           await _context.Set<TEntity>().AddAsync(entity);
-           await _context.SaveChangesAsync();
-
+            return await _context.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task<TEntity> Delete(int entityId)
-        {
-            var entity = await _context.Set<TEntity>().FindAsync(entityId);
-
-            if(entity == null)
-            {
-                throw new ValidationException($"Object of type {typeof(TEntity)} with id {entityId} not found");
-            }
-
-            await _context.SaveChangesAsync();
-            return entity; 
-        }
-
-        public async Task<List<TEntity>> GetAll()
+        public virtual async Task<List<TEntity>> GetAllAsync()
         {
             return await _context.Set<TEntity>().ToListAsync();
         }
 
-
-        public async Task<TEntity> Update(TEntity entity)
+        public async Task<TEntity> AddAsync(TEntity entity)
         {
-            _context.Set<TEntity>().Update(entity); 
+            var  result = await _context.Set<TEntity>().AddAsync(entity);
             await _context.SaveChangesAsync();
-            return entity;  
+
+            return result.Entity;
         }
 
-        public async Task<TEntity> GetById(int id)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            return await _context.Set<TEntity>().FindAsync(id);
-
+            _context.Set<TEntity>().Update(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
+        public async Task<TEntity> GetByIdWithIncludeAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties)
+        {
+            var query = IncludeProperties(includeProperties);
+            return await query.FirstOrDefaultAsync(entity => entity.Id == id);
+        }
 
+        public async Task<TEntity> DeleteAsync(int id)
+        {
+            var entity = await _context.Set<TEntity>().FindAsync(id);
+            if (entity == null)
+            {
+                throw new ValidationException($"Object of type {typeof(TEntity)} with id {id} not found");
+            }
+
+            _context.Set<TEntity>().Remove(entity);
+
+            return entity;
+        }
+
+        private IQueryable<TEntity> IncludeProperties<TEntity>(params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : Entity
+        {
+            IQueryable<TEntity> entities = _context.Set<TEntity>();
+            foreach (var includeProperty in includeProperties)
+            {
+                entities = entities.Include(includeProperty);
+            }
+            return entities;
+        }
     }
 }

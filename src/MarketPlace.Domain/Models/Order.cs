@@ -15,7 +15,7 @@ namespace MarketPlace.Domain.Models
         [ForeignKey(nameof(Buyer))]
         public int CretedById { get; set; } 
         public User Buyer { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; }               
         public int PromocodeId { get; set; }
         public Promocode Promocode { get; set; }
         public int Quantity { get; set; }
@@ -25,7 +25,7 @@ namespace MarketPlace.Domain.Models
         public int StatusId { get; set; }
         public OrderStatus Status { get; set; }
 
-        [Column(TypeName = "decimal(5, 2)")]
+        [Column(TypeName = "decimal(5, 2)")]    
         public decimal TotalPrice { get; set; }
         public List<ProductOrder> ProductOrders { get; } = [];
     }
