@@ -11,10 +11,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 
 namespace MarketPlace.Application.Orders.Create
 {
-    public record CreateOrder(int CretedById, DateTime CreatedDate, int PromocodeId, int Quantity, string ShippingAdress,int StatusId, decimal TotalPrice) : IRequest<OrderDto>;
+    public record CreateOrder(int CretedById, DateTime CreatedDate, int PromocodeId, int Quantity, string ShippingAdress,int StatusId, decimal TotalPrice) : ICommand<OrderDto>;
     public class CreateOrderHandler : IRequestHandler<CreateOrder, OrderDto>
     {
         private readonly IMapper _mapper;

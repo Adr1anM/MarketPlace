@@ -11,7 +11,7 @@ namespace MarketPlace.Application.Abstractions.Behaviors.Messaging
     { 
     
     }
-    public interface ICommand<TResponse> : IRequest<TResponse>, ICommandBase
+    public interface ICommand<TRequest> : IRequest<TRequest>, ICommandBase
     { 
     
     }

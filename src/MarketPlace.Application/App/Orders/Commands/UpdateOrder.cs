@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 using MarketPlace.Application.App.Orders.Responses;
 using MarketPlace.Application.Orders.Create;
 using MarketPlace.Domain.Models;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.Orders.Update
 {
-    public record UpdateOrder(int Id,int CretedById, DateTime CreatedDate, int PromocodeId, int Quantity, string ShippingAdress, int StatusId, decimal TotalPrice) : IRequest<OrderDto>;
+    public record UpdateOrder(int Id,int CretedById, DateTime CreatedDate, int PromocodeId, int Quantity, string ShippingAdress, int StatusId, decimal TotalPrice) : ICommand<OrderDto>;
     public class UpdateOrderHandler : IRequestHandler<UpdateOrder,OrderDto>
     {
         private readonly IMapper _mapper;

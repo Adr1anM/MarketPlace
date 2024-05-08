@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 using MarketPlace.Application.App.Authors.Responses;
 using MarketPlace.Application.App.Orders.Responses;
 using MarketPlace.Domain.Models;
@@ -9,7 +10,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MarketPlace.Application.App.Authors.Commands
 {
-    public record UpdateAuthor(int Id, int UserId, string Biography, string Country, DateTime BirthDate, string SocialMediaLinks, int NumberOfPosts) : IRequest<AuthorDto>;
+    public record UpdateAuthor(int Id, int UserId, string Biography, string Country, DateTime BirthDate, string SocialMediaLinks, int NumberOfPosts) : ICommand<AuthorDto>;
     public class UpdateAuthorHandler : IRequestHandler<UpdateAuthor, AuthorDto>
     {
         private readonly IMapper _mapper;

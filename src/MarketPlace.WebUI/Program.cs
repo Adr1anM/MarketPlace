@@ -25,6 +25,7 @@ namespace MarketPlace.WebUI
             }
 
             app.UseHttpsRedirection();
+            app.UseCustomExeptionHandling();  
             app.UseTiming();
             app.UseAuthorization();
             app.MapControllers();

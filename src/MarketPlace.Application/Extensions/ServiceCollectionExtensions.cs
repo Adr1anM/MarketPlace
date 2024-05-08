@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using MarketPlace.Application.Abstractions.Behaviors;
 using MarketPlace.Application.App.Products.Commands;
 using MarketPlace.Domain.Models.Auth;
 using Microsoft.AspNetCore.Identity;
@@ -17,10 +18,16 @@ namespace MarketPlace.Application.Extensions
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            services.AddValidatorsFromAssembly(assembly);
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateProduct).Assembly));
+            
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssemblyContaining<CreateProduct>();    
+                cfg.AddOpenBehavior(typeof(ValidationBehaviors<,>)); 
+            });
 
-           
+            services.AddValidatorsFromAssembly(assembly);
+
+
 
             return services;
         }

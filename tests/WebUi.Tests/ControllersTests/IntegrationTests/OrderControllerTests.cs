@@ -12,6 +12,7 @@ using MarketPlace.Infrastructure.Persistance.Context;
 using MarketPlace.Infrastructure.Repositories;
 using MarketPlace.WebUI.Controllers;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -54,8 +55,33 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests
             Assert.Equal(command.CreatedDate, authorDto.CreatedDate);
 
             SeedHelper.CleanDatabase(context);
-        }   
+        }
 
+
+        [Fact]
+        public async Task Create_Invaide_Order_ReturnsBadRequestResult()
+        {
+
+            var context = _fixture.GetContext();
+            var command = new CreateOrder(
+                CretedById: 0, 
+                CreatedDate: DateTime.MinValue,
+                PromocodeId: 231,
+                Quantity: 0, 
+                ShippingAdress: string.Empty, 
+                StatusId: 0, 
+                TotalPrice: 0 
+            );
+            // Act
+            var result = await _controller.CreateOrder(command);
+
+            // Assert
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal(StatusCodes.Status400BadRequest, badRequestResult.StatusCode);
+
+
+            SeedHelper.CleanDatabase(context);
+        }
 
 
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 using MarketPlace.Application.App.Orders.Responses;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.Orders.Delete
 {
-    public record DeleteOrder(int id) : IRequest<OrderDto>;
+    public record DeleteOrder(int id) : ICommand<OrderDto>;
     public class DeleteOrderHandler : IRequestHandler<DeleteOrder, OrderDto>
     {
         private readonly IMapper _mapper;
