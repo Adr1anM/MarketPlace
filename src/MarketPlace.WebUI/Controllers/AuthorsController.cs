@@ -2,6 +2,7 @@
 using MarketPlace.Application.App.Authors.Querries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -26,7 +27,6 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpPut]
-
         public async Task<IActionResult> UpdateAuthor(UpdateAuthor command)
         {
             var result = await _mediator.Send(command);
@@ -67,7 +67,7 @@ namespace MarketPlace.WebUI.Controllers
             if(author == null)
             {
                 return NotFound($"Nu such author with Id:{id}");
-            }
+            }   
             return Ok(author);  
         }
 

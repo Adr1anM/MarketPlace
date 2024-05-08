@@ -29,4 +29,10 @@
     <ProjectReference Include="..\..\src\MarketPlace.Infrastructure\MarketPlace.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="QuerriesTest\AuthorsTests\" />
+    <Folder Include="QuerriesTest\ProductTestss\" />
+    <Folder Include="QuerriesTest\OrderTests\" />
+  </ItemGroup>
+
 </Project>

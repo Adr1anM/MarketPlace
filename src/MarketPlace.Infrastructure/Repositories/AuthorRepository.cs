@@ -21,6 +21,6 @@ namespace MarketPlace.Infrastructure.Repositories
             => await _context.Authors.Where(expresionPredicate).ToListAsync();
         
         public async Task<Author> GetAuthorWhere(Expression<Func<Author, bool>> expresionPredicate)
-            => await _context.Authors.Where(expresionPredicate).FirstOrDefaultAsync();
+            => await _context.Authors.FirstOrDefaultAsync(expresionPredicate);
     }
 }

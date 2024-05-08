@@ -12,16 +12,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 
 namespace MarketPlace.Application.App.Authors.Commands
 {
-    public record CreateAuthor(int UserId,string Biography,string Country,DateTime BirthDate, string SocialMediaLinks,int NumberOfPosts) : IRequest<AuthorDto>;
+    public record CreateAuthor(int UserId,string Biography,string Country,DateTime BirthDate, string SocialMediaLinks,int NumberOfPosts) : ICommand<AuthorDto>;
     public class CreateAuthorHandler : IRequestHandler<CreateAuthor, AuthorDto>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
-        private readonly ILogger _logger;  
+        private readonly ILogger _logger;   
         public CreateAuthorHandler(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork, ILoggerFactory loggerFactory)
         {
             _unitOfWork = unitOfWork;
@@ -38,6 +39,7 @@ namespace MarketPlace.Application.App.Authors.Commands
                 _logger.LogError($"User with Id:{request.UserId} not found");
                 throw new Exception($"User with Id:{request.UserId} not found");
             }
+
             var author = _mapper.Map<Author>(request);      
             
             try

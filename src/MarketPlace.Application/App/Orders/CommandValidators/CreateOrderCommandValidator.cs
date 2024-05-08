@@ -13,7 +13,10 @@ namespace MarketPlace.Application.App.Orders.CommandValidators
     {
         public CreateOrderCommandValidator()
         {
-            RuleFor(o => o.CretedById)
+            RuleFor(o => o.CretedById).MustAsync(async (cretedById, _)=>
+            {
+                return await 
+            })
                 .NotEmpty();
 
             RuleFor(o => o.CreatedDate)

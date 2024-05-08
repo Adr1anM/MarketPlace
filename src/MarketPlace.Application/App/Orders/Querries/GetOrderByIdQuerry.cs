@@ -23,7 +23,7 @@ namespace MarketPlace.Application.App.Orders.Querries
         }
         public async Task<OrderDto> Handle(GetOrderByIdQuerry request, CancellationToken cancellationToken)
         {
-            var orderResult = await _unitOfWork.Orders.GetByIdWithIncludeAsync(request.Id, order => order.Buyer, order => order.ProductOrders);
+            var orderResult = await _unitOfWork.Orders.GetByIdAsync(request.Id);
             return _mapper.Map<OrderDto>(orderResult); 
         }
     }

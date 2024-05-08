@@ -28,7 +28,7 @@ namespace MarketPlace.Application.Orders.Create
             _logger = loggerFactory.CreateLogger<CreateOrderHandler>();
         }
         public async Task<OrderDto> Handle(CreateOrder request, CancellationToken cancellationToken)
-        {
+        {   
             var order = _mapper.Map<Order>(request);    
             try
             {

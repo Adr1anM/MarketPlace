@@ -5,11 +5,7 @@ using MarketPlace.Application.App.Orders.Responses;
 using MarketPlace.Domain.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MarketPlace.Application.App.Authors.Commands
 {
@@ -18,7 +14,8 @@ namespace MarketPlace.Application.App.Authors.Commands
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger _logger;
+        private readonly ILogger _logger;   
+
 
         public UpdateAuthorHandler(IMapper mapper, IUnitOfWork unitOfWork, ILoggerFactory loggerFactory)
         {
@@ -56,6 +53,7 @@ namespace MarketPlace.Application.App.Authors.Commands
                 throw;
 
             }
+
             catch (Exception ex)
             {
                 await _unitOfWork.RollbackTransactionAsync();

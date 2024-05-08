@@ -36,10 +36,11 @@ namespace MarketPlace.Application.App.Authors.Commands
             try
             {
                 await _unitOfWork.BeginTransactionAsync();
-                await _unitOfWork.Orders.DeleteAsync(author.Id);
+                var result = await _unitOfWork.Authors.DeleteAsync(author.Id);
                 await _unitOfWork.SaveAsync();
                 await _unitOfWork.CommitTransactionAsync();
-                return _mapper.Map<AuthorDto>(author);
+
+                return _mapper.Map<AuthorDto>(result);  
             }
             catch (Exception ex)
             {
