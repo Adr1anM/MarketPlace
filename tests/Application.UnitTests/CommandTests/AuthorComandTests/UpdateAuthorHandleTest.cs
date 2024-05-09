@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Application.UnitTests.Helpers;
+using AutoMapper;
 using Azure.Core;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.App.Authors.Commands;
@@ -10,18 +11,8 @@ using Moq;
 
 namespace Application.UnitTests.CommandTests.AuthorComandTests
 {
-    public class UpdateAuthorHandleTest
+    public class UpdateAuthorHandleTest : BaseCommandHandlerTest
     {
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<ILoggerFactory> _loggerMock;
-
-        public UpdateAuthorHandleTest()
-        {
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _mapperMock = new Mock<IMapper>();
-            _loggerMock = new Mock<ILoggerFactory>();
-        }
 
         [Fact]
         public async Task UpdateAuthor_Command_Should_Update_ReturnsAuthorDto()
@@ -61,7 +52,7 @@ namespace Application.UnitTests.CommandTests.AuthorComandTests
                 NumberOfPosts = command.NumberOfPosts,
             };
 
-            var handler = new UpdateAuthorHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+            var handler = new UpdateAuthorHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerFactoryMock.Object);
 
             _unitOfWorkMock.Setup(uaw => uaw.Authors.GetByIdAsync(command.Id)).ReturnsAsync(author);
 
@@ -92,7 +83,7 @@ namespace Application.UnitTests.CommandTests.AuthorComandTests
             var author = new Author();
             _unitOfWorkMock.Setup(uow => uow.Authors.GetByIdAsync(command.Id)).ReturnsAsync(author);
 
-            var handler = new UpdateAuthorHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+            var handler = new UpdateAuthorHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerFactoryMock.Object);
             var expectedExceptionMessage = "Test exception message"; 
             _mapperMock.Setup(m => m.Map(command, author)).Throws(new Exception(expectedExceptionMessage));
 

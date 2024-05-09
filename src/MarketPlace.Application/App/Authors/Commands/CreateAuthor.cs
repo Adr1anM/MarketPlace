@@ -12,11 +12,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MarketPlace.Application.Abstractions.Behaviors.Messaging;
+
 
 namespace MarketPlace.Application.App.Authors.Commands
 {
-    public record CreateAuthor(int UserId,string Biography,string Country,DateTime BirthDate, string SocialMediaLinks,int NumberOfPosts) : ICommand<AuthorDto>;
+    public record CreateAuthor(int UserId,string Biography,string Country,DateTime BirthDate, string SocialMediaLinks,int NumberOfPosts) : IRequest<AuthorDto>;
     public class CreateAuthorHandler : IRequestHandler<CreateAuthor, AuthorDto>
     {
         private readonly IMapper _mapper;

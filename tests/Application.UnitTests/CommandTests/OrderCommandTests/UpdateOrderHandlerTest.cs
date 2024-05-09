@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Application.UnitTests.Helpers;
+using AutoMapper;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.Responses;
@@ -16,18 +17,8 @@ using System.Threading.Tasks;
 
 namespace Application.UnitTests.CommandTests.OrderCommandTests
 {
-    public class UpdateOrderHandlerTest
+    public class UpdateOrderHandlerTest : BaseCommandHandlerTest
     {
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<ILoggerFactory> _loggerMock;
-
-        public UpdateOrderHandlerTest()
-        {
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _mapperMock = new Mock<IMapper>();
-            _loggerMock = new Mock<ILoggerFactory>();
-        }
 
         [Fact]
         public async Task UpdateOrder_Command_Should_Update_ReturnsOrderDto()
@@ -69,7 +60,7 @@ namespace Application.UnitTests.CommandTests.OrderCommandTests
                 TotalPrice = 9000,
             };
 
-            var handler = new UpdateOrderHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+            var handler = new UpdateOrderHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerFactoryMock.Object);
 
             _unitOfWorkMock.Setup(uaw => uaw.Orders.GetByIdAsync(command.Id)).ReturnsAsync(order);
 
@@ -99,7 +90,7 @@ namespace Application.UnitTests.CommandTests.OrderCommandTests
 
             _unitOfWorkMock.Setup(uow => uow.Orders.GetByIdAsync(command.Id)).ReturnsAsync(author);
 
-            var handler = new UpdateOrderHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+            var handler = new UpdateOrderHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerFactoryMock.Object);
             var expectedExceptionMessage = "Test exception message";
             _mapperMock.Setup(m => m.Map(command, author)).Throws(new Exception(expectedExceptionMessage));
 

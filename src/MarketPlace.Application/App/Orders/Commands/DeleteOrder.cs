@@ -31,7 +31,7 @@ namespace MarketPlace.Application.Orders.Delete
             if (entity == null)
             {
                 _logger.LogError("No order found with Id:{0}",request.id);
-                throw new Exception("No such order found");
+                throw new Exception("No such Order found");
             }
 
 

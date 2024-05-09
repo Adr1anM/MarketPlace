@@ -46,10 +46,6 @@ namespace MarketPlace.WebUI.Controllers
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var orderResult = await _mediator.Send(new DeleteOrder(id));
-            if(orderResult == null)
-            {
-                return NotFound($"Order with such Id:{id} not found");
-            }
             return Ok(orderResult);
         }
 
@@ -70,7 +66,7 @@ namespace MarketPlace.WebUI.Controllers
             var orders = await _mediator.Send(new GetAllOrderQuerry());
             if (orders.IsNullOrEmpty())
             {
-                return NotFound($"There are no Orders ");
+                return NotFound("There are no Orders");
             }
             return Ok(orders);
         }

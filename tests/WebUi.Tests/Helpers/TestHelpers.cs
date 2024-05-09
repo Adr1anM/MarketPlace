@@ -38,19 +38,22 @@ namespace WebUi.Tests.Helpers
 {
     public static class TestHelpers
     {
-        public static IMediator CreateMediator(IUnitOfWork unitOfWork, IMapper mapper, ILoggerFactory loggerFactory)
+        public static IMediator CreateMediator(IUnitOfWork unitOfWork, IMapper mapper, ILoggerFactory loggerFactory, UserManager<User> usermanager)
         {
             var services = new ServiceCollection();
 
             services.AddScoped<IUnitOfWork>(_ => unitOfWork);
             services.AddScoped<IMapper>(_ => mapper);
             services.AddScoped<ILoggerFactory>(_ => loggerFactory);
+            services.AddScoped<UserManager<User>>(_ => usermanager);
+
 
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateAuthor).Assembly));
 
             //Register handlers for authors
             services.AddScoped<IRequestHandler<GetAllAuthorsQuerry, IEnumerable<AuthorDto>>, GetAllAuthorsQuerryHandler>();
+            services.AddScoped<IRequestHandler<GetAuthorByIdQuerry, AuthorDto>, GetAuthorByIdQuerryHandler>();
             services.AddScoped<IRequestHandler<CreateAuthor, AuthorDto>, CreateAuthorHandler>();
             services.AddScoped<IRequestHandler<UpdateAuthor, AuthorDto>, UpdateAuthorHandler>();
             services.AddScoped<IRequestHandler<DeleteAuthor, AuthorDto>, DeleteAuthorHandler>();
@@ -142,6 +145,7 @@ namespace WebUi.Tests.Helpers
             services.AddIdentity<User, Role>()
                 .AddEntityFrameworkStores<ArtMarketPlaceDbContext>()
                 .AddDefaultTokenProviders();
+               // .AddUserStore<User>();
             services.AddScoped<RoleManager<Role>>();
             services.AddScoped<ArtMarketPlaceDbContext>();
         }

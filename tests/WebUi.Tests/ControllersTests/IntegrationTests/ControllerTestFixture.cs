@@ -22,7 +22,7 @@ using System;
 
 namespace WebUi.Tests.ControllersTests.IntegrationTests
 {
-    public class OrdersControllerTestFixture : IDisposable
+    public class ControllerTestFixture : IDisposable
     {
        
         public IUnitOfWork UnitOfWork { get; }
@@ -32,11 +32,11 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests
         public IMapper Mapper { get; }
         public ArtMarketPlaceDbContext DataContext { get; set; }
 
-        private ServiceProvider serviceProvider { get; }
+        public ServiceProvider serviceProvider { get; }
 
 
 
-        public OrdersControllerTestFixture()
+        public ControllerTestFixture()
         {
             var services = new ServiceCollection();
             TestHelpers.ConfigureTestServices(services);
@@ -49,14 +49,14 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests
             UnitOfWork = serviceProvider.GetRequiredService<IUnitOfWork>();
             LoggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
             UserManager = TestHelpers.SetupUserManager(DataContext);
-            Mediator = TestHelpers.CreateMediator(UnitOfWork, Mapper, LoggerFactory);
+            Mediator = TestHelpers.CreateMediator(UnitOfWork, Mapper, LoggerFactory, UserManager);
 
         }
 
         public ArtMarketPlaceDbContext GetContext()
         {
-            var context = serviceProvider.GetRequiredService<ArtMarketPlaceDbContext>();
-            return context;
+            DataContext = serviceProvider.GetRequiredService<ArtMarketPlaceDbContext>();
+            return DataContext;
         }
 
         public void Dispose()

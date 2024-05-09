@@ -18,7 +18,7 @@ namespace MarketPlace.Application.App.Authors.Commands
         public DeleteAuthorHandler(IMapper mapper, IUnitOfWork unitOfWork, ILoggerFactory loggerFactory)
         {
             _mapper = mapper;
-            _unitOfWork = unitOfWork;
+            _unitOfWork = unitOfWork;   
             _logger = loggerFactory.CreateLogger<DeleteAuthorHandler>();    
         }
 
@@ -29,7 +29,7 @@ namespace MarketPlace.Application.App.Authors.Commands
             if (author == null)
             {
                 _logger.LogError($"No such order with Id:{request.id} found");
-                throw new Exception("No such order found");
+                throw new Exception("No such Author found");
             }
 
 

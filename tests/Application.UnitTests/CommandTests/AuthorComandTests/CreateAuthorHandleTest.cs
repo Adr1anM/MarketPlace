@@ -15,23 +15,17 @@ using Azure.Core;
 using MarketPlace.Domain.Models;
 using MarketPlace.Application.App.Authors.Responses;
 using Microsoft.Extensions.DependencyInjection;
+using Application.UnitTests.Helpers;
 
 namespace Application.UnitTests.CommandTests.AuthorComandTests
 {
-    public class CreateAuthorHandleTest
+    public class CreateAuthorHandleTest : BaseCommandHandlerTest
     {
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IMapper> _mapperMock;
         private readonly Mock<UserManager<User>> _userManagerMock;
-        private readonly Mock<ILoggerFactory> _loggerFactoryMock;
         
-
         public CreateAuthorHandleTest()
         {
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _mapperMock = new Mock<IMapper>();
-            _userManagerMock = MockUserManager<User>();
-            _loggerFactoryMock = new Mock<ILoggerFactory>();
+            _userManagerMock = MockUserManager<User>();          
         }
 
         private static Mock<UserManager<TUser>> MockUserManager<TUser>() where TUser : class

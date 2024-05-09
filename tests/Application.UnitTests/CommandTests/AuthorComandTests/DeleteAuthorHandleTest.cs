@@ -6,22 +6,13 @@ using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.Responses;
 using MarketPlace.Domain.Models;
 using MarketPlace.Application.Orders.Delete;
+using Application.UnitTests.Helpers;
 
 
 namespace Application.UnitTests.CommandTests.AuthorComandTests
 {
-    public class DeleteAuthorHandleTest
+    public class DeleteAuthorHandleTest : BaseCommandHandlerTest
     {
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<ILoggerFactory> _loggerMock;
-
-        public DeleteAuthorHandleTest()
-        {
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _mapperMock = new Mock<IMapper>();
-            _loggerMock = new Mock<ILoggerFactory>();
-        }
 
         [Fact]
         public async Task Handle_ValidAuthorId_DeletesAuthorAndReturnsAuthorDto()
@@ -39,7 +30,7 @@ namespace Application.UnitTests.CommandTests.AuthorComandTests
                 SocialMediaLinks = "SocialMedia",
                 NumberOfPosts = 10
             };
-
+                
             var authorDto = new AuthorDto
             {
                 Id = authorId,
@@ -51,7 +42,7 @@ namespace Application.UnitTests.CommandTests.AuthorComandTests
                 NumberOfPosts = 10
             };
 
-            var handler = new DeleteAuthorHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+            var handler = new DeleteAuthorHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerFactoryMock.Object);
             var request = new DeleteAuthor(authorId);
 
             _unitOfWorkMock.Setup(uow => uow.Authors.GetByIdAsync(authorId)).ReturnsAsync(author);
@@ -82,7 +73,7 @@ namespace Application.UnitTests.CommandTests.AuthorComandTests
 
             _unitOfWorkMock.Setup(uow => uow.Authors.GetByIdAsync(orderId)).ReturnsAsync((Author)null);
 
-            var handler = new DeleteOrderHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+            var handler = new DeleteOrderHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerFactoryMock.Object);
             var request = new DeleteOrder(orderId);
 
             // Act & Assert

@@ -13,21 +13,12 @@ using System.Text;
 using System.Threading.Tasks;
 using MarketPlace.Application.Orders.Create;
 using MarketPlace.Application.App.Orders.Responses;
+using Application.UnitTests.Helpers;
 
 namespace Application.UnitTests.CommandTests.OrderCommandTests
 {
-    public class CreateOrderHandlerTest
+    public class CreateOrderHandlerTest : BaseCommandHandlerTest
     {
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<ILoggerFactory> _loggerFactoryMock;
-
-        public CreateOrderHandlerTest()
-        {
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _mapperMock = new Mock<IMapper>();
-            _loggerFactoryMock = new Mock<ILoggerFactory>();
-        }
 
         [Fact]
         public async Task Create_OrderCommand_Should_Create_ReturnsOrderDto()

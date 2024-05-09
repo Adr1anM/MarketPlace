@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Application.UnitTests.Helpers;
+using AutoMapper;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.Responses;
@@ -16,19 +17,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Application.UnitTests.CommandTests.OrderCommandTests
 {
-    public class DeleteOrderHandlerTest
+    public class DeleteOrderHandlerTest : BaseCommandHandlerTest
     {
-        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly Mock<IMapper> _mapperMock;
-        private readonly Mock<ILoggerFactory> _loggerMock;
-
-        public DeleteOrderHandlerTest()
-        {
-            _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _mapperMock = new Mock<IMapper>();
-            _loggerMock = new Mock<ILoggerFactory>();
-        }
-
+      
         [Fact]
         public async Task Handle_ValidOrderId_DeletesOrderAndReturnsOrderDto()
         {
@@ -58,7 +49,7 @@ namespace Application.UnitTests.CommandTests.OrderCommandTests
                 TotalPrice = 9000,
             };
 
-            var handler = new DeleteOrderHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+            var handler = new DeleteOrderHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerFactoryMock.Object);
             var request = new DeleteOrder(orderId);
 
             _unitOfWorkMock.Setup(uow => uow.Orders.GetByIdAsync(orderId)).ReturnsAsync(order);
@@ -89,7 +80,7 @@ namespace Application.UnitTests.CommandTests.OrderCommandTests
 
             _unitOfWorkMock.Setup(uow => uow.Orders.GetByIdAsync(orderId)).ReturnsAsync((Order)null);
 
-            var handler = new DeleteAuthorHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerMock.Object);
+            var handler = new DeleteAuthorHandler(_mapperMock.Object, _unitOfWorkMock.Object, _loggerFactoryMock.Object);
             var request = new DeleteAuthor(orderId);
 
 

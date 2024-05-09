@@ -22,7 +22,6 @@ namespace MarketPlace.WebUI.Controllers
         public async Task<IActionResult> CreateAuthor(CreateAuthor command)
         {
             var result = await _mediator.Send(command);
-
             return Ok(result);
         }
 
@@ -43,7 +42,7 @@ namespace MarketPlace.WebUI.Controllers
             var authors = await _mediator.Send(new GetAllAuthorsQuerry());
             if(authors.IsNullOrEmpty())
             {
-                return NotFound($"There are no authors at all");
+                return NotFound("There are no authors");
             }
             return Ok(authors);
         }
@@ -66,7 +65,7 @@ namespace MarketPlace.WebUI.Controllers
 
             if(author == null)
             {
-                return NotFound($"Nu such author with Id:{id}");
+                return NotFound($"No such author with Id:{id}");
             }   
             return Ok(author);  
         }
