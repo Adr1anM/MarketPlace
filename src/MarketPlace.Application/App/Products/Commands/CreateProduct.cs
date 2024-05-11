@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.Abstractions.Repositories;
+using MarketPlace.Application.Exceptions;
 using MarketPlace.Application.Paints.Responses;
 using MarketPlace.Domain.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,34 +23,38 @@ namespace MarketPlace.Application.App.Products.Commands
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger _logger;
 
-
         public CreateProductHandler(IMapper mapper, IUnitOfWork unitOfWork, ILoggerFactory loggerFactory)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = loggerFactory.CreateLogger<CreateProductHandler>();
+        
         }
         public async Task<ProductDto> Handle(CreateProduct request, CancellationToken cancellationToken)
         {
 
-            var product = _mapper.Map<Product>(request);
+            var existingCategory = await _unitOfWork.GetGenericRepository<Category>().GetByIdAsync(request.CategoryID);
 
-            try
+            if (existingCategory == null)
             {
-                await _unitOfWork.BeginTransactionAsync();
-                var returnedProduct = await _unitOfWork.Products.AddAsync(product);
-                await _unitOfWork.SaveAsync();
-                await _unitOfWork.CommitTransactionAsync();
-
-                return _mapper.Map<ProductDto>(returnedProduct);
-
+                _logger.LogError($"Entity of type '{typeof(Category).Name}' with ID '{request.CategoryID}' not found.");
+                throw new EntityNotFoundException(typeof(Category), request.CategoryID);
             }
-            catch (Exception ex)
-            {          
-                await _unitOfWork.RollbackTransactionAsync();
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
-                throw;
+
+            var existingAuthor = await _unitOfWork.Authors.GetByIdAsync(request.AuthorId); 
+            if(existingAuthor == null)
+            {
+                _logger.LogError($"Entity of type '{typeof(Author).Name}' with ID '{request.AuthorId}' not found.");
+                throw new EntityNotFoundException(typeof(Author), request.AuthorId);               
             }
+
+            var product = _mapper.Map<Product>(request);
+                  
+            var returnedProduct = await _unitOfWork.Products.AddAsync(product);
+            await _unitOfWork.SaveAsync(cancellationToken);  
+            return _mapper.Map<ProductDto>(returnedProduct);
+          
+
         }
     }
 }

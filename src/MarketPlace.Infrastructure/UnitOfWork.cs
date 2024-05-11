@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MarketPlace.Infrastructure
@@ -31,14 +32,14 @@ namespace MarketPlace.Infrastructure
 
         public IProductRepository Products { get; private set; }
 
-        public async Task BeginTransactionAsync()
+        public async Task BeginTransactionAsync(CancellationToken cancellationToken)
         {
-           await _context.Database.BeginTransactionAsync();
+           await _context.Database.BeginTransactionAsync(cancellationToken);
         }
 
-        public async Task CommitTransactionAsync()
+        public async Task CommitTransactionAsync(CancellationToken cancellationToken)
         {
-           await _context.Database.CommitTransactionAsync();    
+           await _context.Database.CommitTransactionAsync(cancellationToken);    
         }
 
         public IGenericRepository<TEntity> GetGenericRepository<TEntity>() where TEntity : Entity
@@ -52,14 +53,14 @@ namespace MarketPlace.Infrastructure
             return (IGenericRepository<TEntity>)_repositories[type];
         }
 
-        public async Task RollbackTransactionAsync()
+        public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
         {
-           await _context.Database.RollbackTransactionAsync();  
+           await _context.Database.RollbackTransactionAsync(cancellationToken);  
         }
 
-        public async Task SaveAsync()
+        public async Task SaveAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
 
         }
 

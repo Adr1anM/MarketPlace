@@ -6,6 +6,7 @@ using MarketPlace.Application.App.Orders.Responses;
 using MarketPlace.Domain.Models;
 using MediatR;
 using System;
+using MarketPlace.Application.Exceptions;
 
 namespace MarketPlace.Application.App.Authors.Commands
 {
@@ -28,26 +29,15 @@ namespace MarketPlace.Application.App.Authors.Commands
 
             if (author == null)
             {
-                _logger.LogError($"No such order with Id:{request.id} found");
-                throw new Exception("No such Author found");
+                _logger.LogError($"Entity of type '{typeof(Author).Name}' with ID '{request.id}' not found.");
+                throw new EntityNotFoundException(typeof(Author), request.id);
             }
+            
+            var result = await _unitOfWork.Authors.DeleteAsync(author.Id);
+            await _unitOfWork.SaveAsync(cancellationToken);
 
-
-            try
-            {
-                await _unitOfWork.BeginTransactionAsync();
-                var result = await _unitOfWork.Authors.DeleteAsync(author.Id);
-                await _unitOfWork.SaveAsync();
-                await _unitOfWork.CommitTransactionAsync();
-
-                return _mapper.Map<AuthorDto>(result);  
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
-                await _unitOfWork.RollbackTransactionAsync();
-                throw;
-            }
+            return _mapper.Map<AuthorDto>(result);  
+            
 
         }
     }

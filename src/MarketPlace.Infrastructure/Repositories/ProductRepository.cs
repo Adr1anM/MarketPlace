@@ -54,6 +54,7 @@ namespace MarketPlace.Infrastructure.Repositories
         {
             return await _context.Products
                     .Skip((pageNumb - 1) * pagesize)
+                    .OrderBy(a => a.Id)
                     .Take(pagesize)
                     .ToListAsync();
         }

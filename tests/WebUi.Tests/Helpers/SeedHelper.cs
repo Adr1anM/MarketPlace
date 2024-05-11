@@ -101,17 +101,7 @@ namespace WebUi.Tests.Helpers
                     StatusId = OrderStatus.Delivered.Id,
                     TotalPrice = 99.99m
                 },
-                new Order
-                {
-                    Id = 4,
-                    CretedById = user.Id,
-                    CreatedDate = DateTime.Now.AddYears(-1),
-                    PromocodeId = 2,
-                    Quantity = 5,
-                    ShippingAdress = "321 Pine St, Anothertown USA",
-                    StatusId = OrderStatus.Canceled.Id,
-                    TotalPrice = 149.99m
-                }
+
             };
 
           
@@ -153,21 +143,32 @@ namespace WebUi.Tests.Helpers
                     SocialMediaLinks = "SocialMedia3",
                     NumberOfPosts = 9
                 },
-                new Author
-                {
-                    Id = 4,
-                    UserId = 5,
-                    Biography = "Biography4",
-                    Country = "Moldova",
-                    BirthDate = DateTime.Now,
-                    SocialMediaLinks = "SocialMedia4",
-                    NumberOfPosts = 4
-                },
-               
+
             };
         }
     
 
+        public static void SeedDatabase(ArtMarketPlaceDbContext context)
+        {
+            OrdersHelper.SeedOrders(context);
+            ProductsHelper.SeedProducts(context);
+            AuthorsHelper.SeedAuthors(context);
+            CategoriesHelper.SeedCategories(context);
+            SeedUsers(context);
+            context.SaveChanges();
+        }
+
+        public static void SeedUsers(ArtMarketPlaceDbContext context)
+        {
+            var users = new List<User>
+            {
+                new User { Id = 1, UserName = "user1@example.com", Email = "user1@example.com" },
+                new User { Id = 2, UserName = "user2@example.com", Email = "user2@example.com" },
+
+            };
+
+            context.Users.AddRange(users);
+        }
         public static void CleanDatabase(ArtMarketPlaceDbContext context)
         {
 

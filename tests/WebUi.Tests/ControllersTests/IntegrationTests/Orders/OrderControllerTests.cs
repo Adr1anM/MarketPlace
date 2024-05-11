@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.Responses;
 using MarketPlace.Application.App.Orders.Responses;
+using MarketPlace.Application.Exceptions;
 using MarketPlace.Application.Orders.Create;
 using MarketPlace.Application.Orders.Update;
 using MarketPlace.Domain.Models;
@@ -182,7 +184,7 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Orders
 
 
         [Fact]
-        public async Task Update_InvalideOrder_Returns_NotFoundObjectResult()
+        public async Task Update_InvalideOrder_Returns_EntityNotFoundException()
         {
             //Arrange
             var context = _fixture.GetContext();
@@ -196,7 +198,7 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Orders
             var result = await _controller.UpdateOrder(command);
 
             var response = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal($"Order with Id:{command.Id} not found", response.Value);
+            Assert.Equal($"Entity of type '{typeof(Order).Name}' with ID '{command.Id}' not found.", response.Value);
             SeedHelper.CleanDatabase(context);
         }
 
@@ -222,7 +224,9 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Orders
 
             //Act
             var result = await _controller.DeleteOrder(orderId);
+            var isOrderPresent = await _controller.GetOrderById(orderId);
 
+            var isOrderPresentResult = Assert.IsType<NotFoundObjectResult>(isOrderPresent);
             var response = Assert.IsType<OkObjectResult>(result);
             var objectResult = Assert.IsType<OrderDto>(response.Value);
 

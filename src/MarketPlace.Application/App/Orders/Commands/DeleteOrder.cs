@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.App.Orders.Responses;
+using MarketPlace.Application.Exceptions;
+using MarketPlace.Domain.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -30,25 +32,14 @@ namespace MarketPlace.Application.Orders.Delete
             var entity = await _unitOfWork.Orders.GetByIdAsync(request.id);
             if (entity == null)
             {
-                _logger.LogError("No order found with Id:{0}",request.id);
-                throw new Exception("No such Order found");
+                _logger.LogError($"Entity of type '{typeof(Order).Name}' with ID '{request.id}' not found.");
+                throw new EntityNotFoundException(typeof(Order), request.id);
             }
 
+            await _unitOfWork.Orders.DeleteAsync(entity.Id);
+            await _unitOfWork.SaveAsync(cancellationToken);
+            return _mapper.Map<OrderDto>(entity);
 
-            try
-            {
-                await _unitOfWork.BeginTransactionAsync();
-                await _unitOfWork.Orders.DeleteAsync(entity.Id);
-                await _unitOfWork.SaveAsync();
-                await _unitOfWork.CommitTransactionAsync();
-                return _mapper.Map<OrderDto>(entity);
-            }
-            catch (Exception ex) 
-            {
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
-                await _unitOfWork.RollbackTransactionAsync();
-                throw;
-            }
         }
           
     }

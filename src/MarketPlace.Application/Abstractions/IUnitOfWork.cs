@@ -15,10 +15,10 @@ namespace MarketPlace.Application.Abstractions
         public IProductRepository Products { get; }
 
         IGenericRepository<TEntity> GetGenericRepository<TEntity>() where TEntity : Entity;
-        Task SaveAsync();
-        Task BeginTransactionAsync();
-        Task CommitTransactionAsync();
-        Task RollbackTransactionAsync();
+        Task SaveAsync(CancellationToken cancellationToken);
+        Task BeginTransactionAsync(CancellationToken cancellationToken);
+        Task CommitTransactionAsync(CancellationToken cancellationToken);
+        Task RollbackTransactionAsync(CancellationToken cancellationToken);
 
     }
 }

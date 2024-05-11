@@ -30,7 +30,7 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct(UpdatePrudoct command)
+        public async Task<IActionResult> UpdateProduct(UpdatePruduct command)
         {
             try
             {

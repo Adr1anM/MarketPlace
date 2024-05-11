@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MarketPlace.Application.Exceptions;
 
 
 namespace MarketPlace.Application.App.Authors.Commands
@@ -36,29 +37,16 @@ namespace MarketPlace.Application.App.Authors.Commands
 
             if(user == null) 
             {
-                _logger.LogError($"User with Id:{request.UserId} not found");
-                throw new Exception($"User with Id:{request.UserId} not found");
+                _logger.LogError($"Entity of type '{typeof(Author).Name}' with ID '{request.UserId}' not found.");
+                throw new EntityNotFoundException(typeof(Author), request.UserId);
             }
 
             var author = _mapper.Map<Author>(request);      
-            
-            try
-            {
-                await _unitOfWork.BeginTransactionAsync();
-    
-                var result = await _unitOfWork.Authors.AddAsync(author);
-                await _unitOfWork.SaveAsync();
-                await _unitOfWork.CommitTransactionAsync();
+               
+            var result = await _unitOfWork.Authors.AddAsync(author);
+            await _unitOfWork.SaveAsync(cancellationToken);
 
-                return _mapper.Map<AuthorDto>(result);
-
-            }
-            catch(Exception ex) 
-            {
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
-                await _unitOfWork.RollbackTransactionAsync();
-                throw;
-            }
+            return _mapper.Map<AuthorDto>(result);
         }
     }
 }

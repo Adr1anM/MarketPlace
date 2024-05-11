@@ -34,7 +34,7 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Authors
         {
             //Arrange
             var context = _fixture.GetContext();
-            await UsersHelper.SeedData(_fixture.serviceProvider);
+            UsersHelper.SeedData(_fixture.serviceProvider);
 
             var command = new CreateAuthor(1, "Biography", "Country", DateTime.Now, "SocialMedia", 10);
             // Act
@@ -56,7 +56,7 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Authors
             //Arrange
             var context = _fixture.GetContext();
             SeedHelper.SeedAuthors(context);
-            await UsersHelper.SeedData(_fixture.serviceProvider);
+            UsersHelper.SeedData(_fixture.serviceProvider);
               
 
             //Act
@@ -76,7 +76,7 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Authors
             // Arrange
             var context = _fixture.GetContext();
             SeedHelper.SeedAuthors(context);
-            await UsersHelper.SeedData(_fixture.serviceProvider);
+            UsersHelper.SeedData(_fixture.serviceProvider);
                
 
             var author = new AuthorDto
@@ -120,7 +120,7 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Authors
             //Arrange
             var context = _fixture.GetContext();
             SeedHelper.SeedAuthors(context);
-            await UsersHelper.SeedData(_fixture.serviceProvider);
+            UsersHelper.SeedData(_fixture.serviceProvider);
            
 
             var command = new UpdateAuthor(2, 3, "biography", "moldova", DateTime.Now, "SocialMedia", 10);
@@ -163,7 +163,7 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Authors
             //Arrange
             var context = _fixture.GetContext();
             SeedHelper.SeedAuthors(context);
-            await UsersHelper.SeedData(_fixture.serviceProvider);
+            UsersHelper.SeedData(_fixture.serviceProvider);
             
             int authorId = 21;
 
@@ -186,7 +186,7 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Authors
             //Arrange
             var context = _fixture.GetContext();
             SeedHelper.SeedAuthors(context);
-            await UsersHelper.SeedData(_fixture.serviceProvider);
+            UsersHelper.SeedData(_fixture.serviceProvider);
 
             int authorId = 2;
 
@@ -228,7 +228,7 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Authors
             //Arrange
             var context = _fixture.GetContext();
             SeedHelper.SeedAuthors(context);
-            await UsersHelper.SeedData(_fixture.serviceProvider);
+            UsersHelper.SeedData(_fixture.serviceProvider);
 
             int authorId = 5;
 

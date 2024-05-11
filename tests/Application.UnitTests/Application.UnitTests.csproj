@@ -30,6 +30,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="CommandTests\Authors\Querries\" />
+    <Folder Include="CommandTests\Orders\Querries\" />
+    <Folder Include="CommandTests\Products\Querries\" />
     <Folder Include="QuerriesTest\AuthorsTests\" />
     <Folder Include="QuerriesTest\ProductTestss\" />
     <Folder Include="QuerriesTest\OrderTests\" />

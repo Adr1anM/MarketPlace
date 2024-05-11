@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Exceptions;
 using MarketPlace.Application.Paints.Responses;
 using MarketPlace.Domain.Models;
 using MediatR;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,8 +14,8 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.App.Products.Commands
 {
-    public record UpdatePrudoct(int Id,string Title, string Description, int CategoryID, int AuthorId, int Quantity, decimal Price, DateTime CreatedDate) : IRequest<ProductDto>;
-    public class UpdateProductHandler : IRequestHandler<UpdatePrudoct, ProductDto>
+    public record UpdatePruduct(int Id,string Title, string Description, int CategoryID, int AuthorId, int Quantity, decimal Price, DateTime CreatedDate) : IRequest<ProductDto>;
+    public class UpdateProductHandler : IRequestHandler<UpdatePruduct, ProductDto>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -24,42 +26,25 @@ namespace MarketPlace.Application.App.Products.Commands
             _unitOfWork = unitofwork;
             _logger = loggerFactory.CreateLogger<UpdateProductHandler>();
         }
-        public async Task<ProductDto> Handle(UpdatePrudoct request, CancellationToken cancellationToken)
+        public async Task<ProductDto> Handle(UpdatePruduct request, CancellationToken cancellationToken)
         {
             var entity = await _unitOfWork.Products.GetByIdAsync(request.Id);
 
             if (entity == null)
             {
-                _logger.LogError($"No Product found with Id:{request.Id}");
-                throw new Exception("There is not such product");
+                _logger.LogError($"Entity of type '{typeof(Product).Name}' with ID '{request.Id}' not found.");
+                throw new EntityNotFoundException(typeof(Product), request.Id);
             }
 
             try
             {
-                await _unitOfWork.BeginTransactionAsync();
                 _mapper.Map(request, entity);
-
-                await _unitOfWork.SaveAsync();
-                await _unitOfWork.CommitTransactionAsync();
+                await _unitOfWork.SaveAsync(cancellationToken);
                 return _mapper.Map<ProductDto>(entity);
-            }
-            catch (ArgumentNullException ex)
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
-                throw;
             }
             catch (AutoMapperMappingException ex)
             {
-                await _unitOfWork.RollbackTransactionAsync();
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
-                throw;
-
-            }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
+                _logger.LogError(ex, "An error occurred while mappinig: {Message}", ex.Message);
                 throw;
             }
         }

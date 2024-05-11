@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Exceptions;
 using MarketPlace.Application.Paints.Responses;
 using MarketPlace.Domain.Models;
 using MediatR;
@@ -31,26 +32,15 @@ namespace MarketPlace.Application.Products.Delete
 
             if(product == null)
             {
-                _logger.LogError($"No product with Id:{request.Id}");
-                throw new Exception("Product not Found");
+                _logger.LogError($"Entity of type '{typeof(Product).Name}' with ID '{request.Id}' not found.");
+                throw new EntityNotFoundException(typeof(Product), request.Id);
             }
 
-            try
-            {
-                await _unitOfWork.BeginTransactionAsync();
-                await _unitOfWork.Orders.DeleteAsync(product.Id);
-                await _unitOfWork.SaveAsync();
-                await _unitOfWork.CommitTransactionAsync();
+            var result =  await _unitOfWork.Products.DeleteAsync(product.Id);
+            await _unitOfWork.SaveAsync(cancellationToken);
 
-                return _mapper.Map<ProductDto>(product);    
+            return _mapper.Map<ProductDto>(result);    
 
-            }
-            catch(Exception ex) 
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);   
-                throw;
-            }
         }
     }
 }

@@ -17,7 +17,7 @@ namespace MarketPlace.Application.Profiles
         {
             CreateMap<Product,ProductDto>().ReverseMap();
             CreateMap<CreateProduct, Product>().ReverseMap();
-            CreateMap<UpdatePrudoct, Product>().ReverseMap();
+            CreateMap<UpdatePruduct, Product>().ReverseMap();
             CreateMap<DeleteProduct, Product>().ReverseMap();
             
         }

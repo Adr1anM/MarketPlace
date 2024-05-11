@@ -25,7 +25,6 @@ namespace MarketPlace.Application.App.Orders.Querries
         public async Task<IEnumerable<OrderDto>> Handle(GetAllOrderQuerry request, CancellationToken cancellationToken)
         {
             var orders = await _unitOfWork.Orders.GetAllAsync();
-
             return _mapper.Map<IEnumerable<OrderDto>>(orders);
         }
     }

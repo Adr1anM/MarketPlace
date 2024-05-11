@@ -28,7 +28,7 @@ namespace WebUi.Tests.Helpers
         }
 
 
-        public static async Task SeedData(IServiceProvider serviceProvider)
+        public static void SeedData(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
@@ -36,26 +36,23 @@ namespace WebUi.Tests.Helpers
 
             if (!userManager.Users.Any())
             {
-                await SeedRoles(roleManager);
-                await SeedUsers(userManager);
+                SeedRoles(roleManager);
+                SeedUsers(userManager);
             }
           
         }
 
-        private static async Task SeedRoles(RoleManager<Role> roleManager)
+        private static void SeedRoles(RoleManager<Role> roleManager)
         {
             var roles = new[] { "Admin", "User" };
 
             foreach (var roleName in roles)
-            {
-                if (!await roleManager.RoleExistsAsync(roleName))
-                {
-                    await roleManager.CreateAsync(new Role { Name = roleName});
-                }
+            {      
+                roleManager.CreateAsync(new Role { Name = roleName}).Wait();
             }
         }
 
-        private static async Task SeedUsers(UserManager<User> userManager)
+        private static void SeedUsers(UserManager<User> userManager)
         {
             var users = new List<User>
             {
@@ -77,11 +74,9 @@ namespace WebUi.Tests.Helpers
 
             foreach (var user in users)
             {
-                if (await userManager.FindByNameAsync(user.UserName) == null)
-                {
-                    await userManager.CreateAsync(user, GenerateRandomPassword());
-                    await userManager.AddToRoleAsync(user, "User"); 
-                }
+                userManager.CreateAsync(user, GenerateRandomPassword()).Wait();
+                userManager.AddToRoleAsync(user, "User").Wait(); 
+              
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.App.Orders.Responses;
+using MarketPlace.Application.Exceptions;
 using MarketPlace.Application.Orders.Create;
 using MarketPlace.Domain.Models;
 using MediatR;
@@ -29,40 +30,25 @@ namespace MarketPlace.Application.Orders.Update
         public async Task<OrderDto> Handle(UpdateOrder request, CancellationToken cancellationToken)
         {
             var entity = await _unitOfWork.Orders.GetByIdAsync(request.Id);
- 
+
+            if (entity == null)
+            {
+                _logger.LogError($"Entity of type '{typeof(Order).Name}' with ID '{request.Id}' not found.");
+                throw new EntityNotFoundException(typeof(Order), request.Id);
+            }
+
             try
             {
-                await _unitOfWork.BeginTransactionAsync();
                 _mapper.Map(request, entity);
-
-                await _unitOfWork.SaveAsync();
-                await _unitOfWork.CommitTransactionAsync();
+                await _unitOfWork.SaveAsync(cancellationToken);
                 return _mapper.Map<OrderDto>(entity);
-
-            }
-            catch(ArgumentNullException ex)
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
-                throw;
             }
             catch (AutoMapperMappingException ex)
             {
-                await _unitOfWork.RollbackTransactionAsync();
                 _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
                 throw;
 
             }
-            catch (Exception ex)
-            {
-                await _unitOfWork.RollbackTransactionAsync();
-                _logger.LogError(ex, "An error occurred: {Message}", ex.Message);
-                throw;
-            }
-
-
-
         }
-
     }
 }
