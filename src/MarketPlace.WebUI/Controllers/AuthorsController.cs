@@ -1,5 +1,6 @@
 ﻿using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.Querries;
+using MarketPlace.WebUI.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,6 +20,7 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> CreateAuthor(CreateAuthor command)
         {
             var result = await _mediator.Send(command);
@@ -26,6 +28,7 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpPut]
+        [ValidateModel]
         public async Task<IActionResult> UpdateAuthor(UpdateAuthor command)
         {
             var result = await _mediator.Send(command);
@@ -37,6 +40,7 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpGet("all")]
+        [ValidateModel]
         public async Task<IActionResult> GetAllAuthors()
         {
             var authors = await _mediator.Send(new GetAllAuthorsQuerry());
@@ -48,6 +52,7 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpGet("country")]
+        [ValidateModel]
         public async Task<IActionResult> GetAuthorsByCountry(string country)
         {
             var authors = await _mediator.Send(new GetAllAuthorsByCountryQuerry(country));

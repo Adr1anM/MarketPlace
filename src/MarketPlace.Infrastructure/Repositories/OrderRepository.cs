@@ -1,4 +1,6 @@
-﻿using MarketPlace.Application.Abstractions.Repositories;
+﻿using AutoMapper;
+using MarketPlace.Application.Abstractions.Repositories;
+using MarketPlace.Application.Common.Models;
 using MarketPlace.Domain.Models;
 using MarketPlace.Infrastructure.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +30,10 @@ namespace MarketPlace.Infrastructure.Repositories
             }
 
             return order;
+        }
+        public override Task<PaginatedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper) where TDto : class
+        {
+            return base.GetPagedData<TDto>(pagedRequest, mapper);
         }
     }
 }

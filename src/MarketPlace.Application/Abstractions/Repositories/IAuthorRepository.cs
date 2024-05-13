@@ -12,5 +12,6 @@ namespace MarketPlace.Application.Abstractions.Repositories
     {
         Task<List<Author>> GetAllAuthorsWhere(Expression<Func<Author, bool>> expresionPredicate);
         Task<Author> GetAuthorWhere(Expression<Func<Author, bool>> expresionPredicate);
+    
     }
 }

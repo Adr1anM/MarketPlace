@@ -12,6 +12,11 @@ using MarketPlace.Application.Profiles;
 using MarketPlace.Domain.Models.Auth;
 using Microsoft.AspNetCore.Identity;
 using MarketPlace.Infrastructure.Persistance.Context;
+using FluentValidation;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
+using MediatR;
+using MarketPlace.Application.Abstractions.Behaviors;
+using MarketPlace.Application.App.Products.CommandValidator;
 
 namespace MarketPlace.WebUI.Extentions
 {
@@ -35,6 +40,7 @@ namespace MarketPlace.WebUI.Extentions
             .AddEntityFrameworkStores<ArtMarketPlaceDbContext>()
             .AddDefaultTokenProviders();
             builder.Services.AddScoped<RoleManager<Role>>();
+
 
         }
     }

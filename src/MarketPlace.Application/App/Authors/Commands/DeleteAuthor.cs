@@ -7,10 +7,11 @@ using MarketPlace.Domain.Models;
 using MediatR;
 using System;
 using MarketPlace.Application.Exceptions;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 
 namespace MarketPlace.Application.App.Authors.Commands
 {
-    public record DeleteAuthor(int id) : IRequest<AuthorDto>;
+    public record DeleteAuthor(int id) : ICommand<AuthorDto>;
     public class DeleteAuthorHandler : IRequestHandler<DeleteAuthor, AuthorDto>
     {
         private readonly IMapper _mapper;

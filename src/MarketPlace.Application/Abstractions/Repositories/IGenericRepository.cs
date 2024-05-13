@@ -1,4 +1,6 @@
-﻿using MarketPlace.Domain.Models;
+﻿using AutoMapper;
+using MarketPlace.Application.Common.Models;
+using MarketPlace.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +18,6 @@ namespace MarketPlace.Application.Abstractions.Repositories
         Task<TEntity> AddAsync(TEntity entity);
         Task<TEntity> UpdateAsync(TEntity entity);
         Task<TEntity> DeleteAsync(int id);
+        Task<PaginatedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper) where TDto : class;
     }
 }

@@ -29,7 +29,7 @@ namespace Application.UnitTests.CommandTests.Products.Commands
                 _loggerFactoryMock.Object);
         }
 
-        private Product CreateTestProduct(UpdatePruduct command)
+        private Product CreateTestProduct(UpdateProduct command)
         {
             return new Product
             {
@@ -43,7 +43,7 @@ namespace Application.UnitTests.CommandTests.Products.Commands
                 CreatedDate = command.CreatedDate,
             };
         }
-        private ProductDto CreateTestProductDto(UpdatePruduct command)
+        private ProductDto CreateTestProductDto(UpdateProduct command)
         {
             return new ProductDto
             {
@@ -61,7 +61,7 @@ namespace Application.UnitTests.CommandTests.Products.Commands
         [Fact]
         public async Task UpdateProduct_Command_Should_Update_ReturnsProductDto()
         {
-            var command = new UpdatePruduct(1, "Title", "Description", 1, 3, 2, 100, DateTime.UtcNow); 
+            var command = new UpdateProduct(1, "Title", "Description", 1, 3, 2, 100, DateTime.UtcNow); 
 
             var initialProduct = new Product
             {
@@ -104,7 +104,7 @@ namespace Application.UnitTests.CommandTests.Products.Commands
         public async Task Update_NonExisting_Product_Throw_EntityNotFoundException()
         {
             //Arrange
-            var command = new UpdatePruduct(1, "Title", "Description", 1, 3, 2, 100, DateTime.UtcNow);
+            var command = new UpdateProduct(1, "Title", "Description", 1, 3, 2, 100, DateTime.UtcNow);
             _unitOfWorkMock.Setup(uow => uow.Products.GetByIdAsync(command.Id)).ReturnsAsync((Product)null);
 
             // Act & Assert
@@ -116,10 +116,10 @@ namespace Application.UnitTests.CommandTests.Products.Commands
         public async Task Update_Product_Throw_AutoMapperMappingException()
         {
             //Arrange
-            var command = new UpdatePruduct(1, "Title", "Description", 1, 3, 2, 100, DateTime.UtcNow);
+            var command = new UpdateProduct(1, "Title", "Description", 1, 3, 2, 100, DateTime.UtcNow);
             var product = new Product();
             _unitOfWorkMock.Setup(uow => uow.Products.GetByIdAsync(command.Id)).ReturnsAsync(product);
-            _mapperMock.Setup(m => m.Map(It.IsAny<UpdatePruduct>(), It.IsAny<Product>())).Throws<AutoMapperMappingException>();
+            _mapperMock.Setup(m => m.Map(It.IsAny<UpdateProduct>(), It.IsAny<Product>())).Throws<AutoMapperMappingException>();
 
             // Act & Assert
             await Assert.ThrowsAsync<AutoMapperMappingException>(() => _handler.Handle(command, CancellationToken.None));

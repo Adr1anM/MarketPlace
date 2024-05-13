@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.App.Orders.Responses;
+using MarketPlace.Application.Exceptions;
 using MarketPlace.Domain.Models;
 using MediatR;
 using System;
@@ -24,6 +25,10 @@ namespace MarketPlace.Application.App.Orders.Querries
         public async Task<OrderDto> Handle(GetOrderByIdQuerry request, CancellationToken cancellationToken)
         {
             var orderResult = await _unitOfWork.Orders.GetByIdAsync(request.Id);
+            if (orderResult == null)
+            {
+                throw new EntityNotFoundException(typeof(Order), request.Id);
+            }
             return _mapper.Map<OrderDto>(orderResult); 
         }
     }

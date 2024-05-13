@@ -1,294 +1,286 @@
 ﻿using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.Responses;
 using MarketPlace.Application.App.Orders.Responses;
+using MarketPlace.Application.App.Products.Commands;
 using MarketPlace.Application.Orders.Create;
+using MarketPlace.Application.Paints.Responses;
 using MarketPlace.Domain.Models;
 using MarketPlace.Domain.Models.Auth;
 using MarketPlace.Domain.Models.Enums;
+using MarketPlace.Infrastructure.Persistance.Context;
 using MarketPlace.WebUI.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using WebUi.Tests.Helpers;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using MarketPlace.Application.Products.Delete;
+using MarketPlace.Application.Orders.Delete;
+using MarketPlace.Application.Orders.Update;
 
 namespace WebUi.Tests.ControllersTests.IntegrationTests.Authors
 {
-    public class AuthorsControllerTests : IClassFixture<ControllerTestFixture>
+    public class AuthorsControllerTests : IDisposable
     {
-        private readonly ControllerTestFixture _fixture;
-        private readonly AuthorsController _controller;
-        public AuthorsControllerTests(ControllerTestFixture fixture)
+        private readonly BaseWebApplicationFactory _factory;
+        private readonly HttpClient _client;
+        public AuthorsControllerTests()
         {
-            _fixture = fixture;
-            _controller = new AuthorsController(_fixture.Mediator);
+            _factory = new BaseWebApplicationFactory();
+            _client = _factory.CreateClient();
+            using var scope = _factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ArtMarketPlaceDbContext>();
+            SeedHelper.SeedDatabase(context);
         }
 
-
         [Fact]
-        public async Task Create_Author_Should_Return_OkResult()
+        public async Task CreateAuthor_ReturnsOkResult_And_AuthorDto()
         {
-            //Arrange
-            var context = _fixture.GetContext();
-            UsersHelper.SeedData(_fixture.serviceProvider);
 
+            //Arrange
             var command = new CreateAuthor(1, "Biography", "Country", DateTime.Now, "SocialMedia", 10);
+
             // Act
-            var result = await _controller.CreateAuthor(command);
+            var result = await _client.PostAsJsonAsync("api/Authors", command);
+            var createdAuthor = await result.Content.ReadFromJsonAsync<AuthorDto>();
 
-            // Assert
-            var createdResult = Assert.IsType<OkObjectResult>(result);
-            var authorDto = Assert.IsType<AuthorDto>(createdResult.Value);
-            Assert.Equal(command.Biography, authorDto.Biography);
-
-            SeedHelper.CleanDatabase(context);
-            await UsersHelper.ClearUsers(_fixture.UserManager);
-
-        }
-
-        [Fact]
-        public async Task Get_Author_ByInvalideId_Returns_NotFoundResponse()
-        {
-            //Arrange
-            var context = _fixture.GetContext();
-            SeedHelper.SeedAuthors(context);
-            UsersHelper.SeedData(_fixture.serviceProvider);
-              
-
-            //Act
-            var result = await _controller.GetAuthorById(7);
-
-            //Assert
-            Assert.IsType<NotFoundObjectResult>(result);
-            SeedHelper.CleanDatabase(context);
-            await UsersHelper.ClearUsers(_fixture.UserManager);
-
-        }
-
-        [Fact]
-        public async Task Get_Author_ById_Returns_OkResponse()
-        {
-
-            // Arrange
-            var context = _fixture.GetContext();
-            SeedHelper.SeedAuthors(context);
-            UsersHelper.SeedData(_fixture.serviceProvider);
-               
-
-            var author = new AuthorDto
-            {
-                Id = 1,
-                UserId = 2,
-                Biography = "Biography",
-                Country = "Country",
-                BirthDate = DateTime.Now,
-                SocialMediaLinks = "SocialMediaLinks",
-                NumberOfPosts = 3
-            };
-            
-            // Act
-            var result = await _controller.GetAuthorById(author.Id);
-
-            // Assert
-            var createdResult = Assert.IsType<OkObjectResult>(result);
-            var authorDtoResult = Assert.IsType<AuthorDto>(createdResult.Value);
-
+            Assert.NotNull(createdAuthor);
             Assert.Multiple(() =>
             {
-                Assert.Equal(author.Id, authorDtoResult.Id);
-                Assert.Equal(author.UserId, authorDtoResult.UserId);
-                Assert.Equal(author.Biography, authorDtoResult.Biography);
-                Assert.Equal(author.Country, authorDtoResult.Country);
-                Assert.Equal(author.SocialMediaLinks, authorDtoResult.SocialMediaLinks);
-                Assert.Equal(author.NumberOfPosts, authorDtoResult.NumberOfPosts);
-              
+                Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+                Assert.Equal(command.Country, createdAuthor.Country);
+                Assert.Equal(command.Biography, createdAuthor.Biography);
+                Assert.Equal(command.Country, createdAuthor.Country);
+                Assert.Equal(command.SocialMediaLinks, createdAuthor.SocialMediaLinks);
+                Assert.Equal(command.NumberOfPosts, createdAuthor.NumberOfPosts);
+            });       
+        }
+
+        [Fact]
+        public async Task Create_Author_WithNonExisting_UserId_ReturnsNotFound()
+        {
+            var command = new CreateAuthor(20, "Biography", "Country", DateTime.Now, "SocialMedia", 10);
+
+            var response = await _client.PostAsJsonAsync("api/Authors", command);
+            var content = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
             });
-
-            SeedHelper.CleanDatabase(context);
-            await UsersHelper.ClearUsers(_fixture.UserManager);
-
         }
 
 
         [Fact]
-        public async Task Update_Author_Should_Return_OkResult_And_AuthorDto()
+        public async Task Create_Author_WithInvalidParams_ReturnsBadRequest()
+        {
+            var command = new CreateAuthor(0, "Biography", "Country", DateTime.Now, "SocialMedia", 0);
+
+            var response = await _client.PostAsJsonAsync("api/Authors", command);
+            var content = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            });
+
+        }
+
+        [Fact]
+        public async Task Update_Author_ReturnsOkResult_And_AuthorDto()
         {
             //Arrange
-            var context = _fixture.GetContext();
-            SeedHelper.SeedAuthors(context);
-            UsersHelper.SeedData(_fixture.serviceProvider);
-           
-
             var command = new UpdateAuthor(2, 3, "biography", "moldova", DateTime.Now, "SocialMedia", 10);
-            var authorDto = new AuthorDto
-            {
-                Id = command.Id,
-                UserId = command.UserId,
-                Biography = command.Biography,
-                Country = command.Country,
-                BirthDate = command.BirthDate,
-                SocialMediaLinks = command.SocialMediaLinks,
-                NumberOfPosts = command.NumberOfPosts,
-            };
             //Act
-            var result = await _controller.UpdateAuthor(command);
+            var response = await _client.PutAsJsonAsync("api/Authors", command);
+            var updatedOrder = await response.Content.ReadFromJsonAsync<AuthorDto>();
 
             //Assert
-            var responseResult = Assert.IsType<OkObjectResult>(result);
-            var authorDtoResult = Assert.IsType<AuthorDto>(responseResult.Value);
-
+            Assert.NotNull(updatedOrder);
             Assert.Multiple(() =>
             {
-                Assert.Equal(authorDto.Id, authorDtoResult.Id);
-                Assert.Equal(authorDto.UserId, authorDtoResult.UserId);
-                Assert.Equal(authorDto.Biography, authorDtoResult.Biography);
-                Assert.Equal(authorDto.Country, authorDtoResult.Country);
-                Assert.Equal(authorDto.SocialMediaLinks, authorDtoResult.SocialMediaLinks);
-                Assert.Equal(authorDto.NumberOfPosts, authorDtoResult.NumberOfPosts);
-
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                Assert.Equal(command.Id, updatedOrder.Id);
+                Assert.Equal(command.UserId, updatedOrder.UserId);
+                Assert.Equal(command.SocialMediaLinks, updatedOrder.SocialMediaLinks);
+                Assert.Equal(command.Country, updatedOrder.Country);
+                Assert.Equal(command.Biography, updatedOrder.Biography);
+                Assert.Equal(command.NumberOfPosts, updatedOrder.NumberOfPosts);
             });
-
-            SeedHelper.CleanDatabase(context);
-            await UsersHelper.ClearUsers(_fixture.UserManager);
-
         }
 
         [Fact]
-        public async Task Update_InvalidAuthor_Should_Return_NotFoundResult()
+        public async Task UpdateAuthor_InvalidId_Returns_NotFound()
         {
             //Arrange
-            var context = _fixture.GetContext();
-            SeedHelper.SeedAuthors(context);
-            UsersHelper.SeedData(_fixture.serviceProvider);
-            
-            int authorId = 21;
-
+            int authorId = 20;
             var command = new UpdateAuthor(authorId, 3, "biography", "moldova", DateTime.Now, "SocialMedia", 10);
-
             //Act
-            var result = await _controller.UpdateAuthor(command);
+            var response = await _client.PutAsJsonAsync("api/Authors", command);
+            var content = await response.Content.ReadAsStringAsync();
 
             //Assert
-            var responseReusult = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("No such Author", responseReusult.Value);
-            SeedHelper.CleanDatabase(context);
-            await UsersHelper.ClearUsers(_fixture.UserManager);
-
-        }
-
-        [Fact]
-        public async Task Delete_Author_Returns_OkResponse_And_Author_Dto()
-        {
-            //Arrange
-            var context = _fixture.GetContext();
-            SeedHelper.SeedAuthors(context);
-            UsersHelper.SeedData(_fixture.serviceProvider);
-
-            int authorId = 2;
-
-            var authorDto = new AuthorDto
-            {
-                Id = 2,
-                UserId = 2,
-                Biography = "Biography2",
-                Country = "Germany",
-                BirthDate = DateTime.Now,
-                SocialMediaLinks = "SocialMedia2",
-                NumberOfPosts = 2
-            };
-
-            //Act
-            var result = await _controller.DeleteAuthor(authorId);
-
-            //Assert
-            var response = Assert.IsType<OkObjectResult>(result);
-            var responseObject = Assert.IsType<AuthorDto>(response.Value);
-
             Assert.Multiple(() =>
             {
-                Assert.Equal(authorDto.Biography, responseObject.Biography);
-                Assert.Equal(authorDto.Country, responseObject.Country);
-                Assert.Equal(authorDto.SocialMediaLinks, responseObject.SocialMediaLinks);
-                Assert.Equal(authorDto.NumberOfPosts, responseObject.NumberOfPosts);
-                Assert.Equal(authorDto.UserId, responseObject.UserId);
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+                Assert.NotEmpty(content);
+            });
+        }
+
+
+        [Fact]
+        public async Task Update_Author_WithInvalidParams_ReturnsBadRequest()
+        {
+            var command = new UpdateAuthor(0, 0, "biography", "moldova", DateTime.Now, "SocialMedia", 10);
+
+            var response = await _client.PutAsJsonAsync("api/Authors", command);
+            var content = await response.Content.ReadAsStringAsync();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+            });
+        }
+
+
+        [Fact]
+        public async Task DeleteAuthor_Returns_OkResult_AndAuthorDto()
+        {
+            //Arrange
+            int authorId = 1;
+            var command = new DeleteAuthor(authorId);
+
+            //Act
+            var response = await _client.DeleteAsync($"api/Authors/{authorId}");
+            var result = await response.Content.ReadFromJsonAsync<OrderDto>();
+
+            using var scope = _factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ArtMarketPlaceDbContext>();
+            var deletedAuthor = context.Authors.Find(authorId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Multiple(() =>
+            {
+
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                Assert.Equal(authorId, result.Id);
+                Assert.Null(deletedAuthor);
             });
 
-            SeedHelper.CleanDatabase(context);
-            await UsersHelper.ClearUsers(_fixture.UserManager);
         }
 
 
         [Fact]
-        public async Task Delete_InvalideAuthor_Returns_NotFoundResponse()
+        public async Task DeleteAuthor_InvalidId_Returns_NotFound()
         {
             //Arrange
-            var context = _fixture.GetContext();
-            SeedHelper.SeedAuthors(context);
-            UsersHelper.SeedData(_fixture.serviceProvider);
+            int authorId = 12;
+            var command = new DeleteAuthor(authorId);
 
-            int authorId = 5;
-
-          
-
-            //Act & Assert
-            var exception = await Assert.ThrowsAsync<Exception>(async () => await _controller.DeleteAuthor(authorId));
-            Assert.Equal("No such Author found", exception.Message);
-
-            SeedHelper.CleanDatabase(context);
-            await UsersHelper.ClearUsers(_fixture.UserManager);
-        }
-
-        [Fact]
-        public async Task GetAllOrders_Returns_OkObjectResult_And_ListOf_OrdersDto()
-        {
-            //Arrange
-            var context = _fixture.GetContext();
-            var expectedAuthorsList = SeedHelper.GetAllSeededAuthors().ToList();
-            SeedHelper.SeedAuthors(context);
 
             //Act
-            var result = await _controller.GetAllAuthors();
+            var response = await _client.DeleteAsync($"api/Authors/{authorId}");
+            var result = await response.Content.ReadAsStringAsync();
 
-            //Assert 
-            var response = Assert.IsType<OkObjectResult>(result);
-            var actualAuthorsList = Assert.IsAssignableFrom<IEnumerable<AuthorDto>>(response.Value);
+            using var scope = _factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ArtMarketPlaceDbContext>();
+            var deletedProduct = context.Authors.Find(authorId);
 
-            var sortedActualAuthorList = actualAuthorsList.OrderBy(x => x.Id).ToList();
-
-            Assert.Equal(expectedAuthorsList.Count(), actualAuthorsList.Count());
+            // Assert
+            Assert.NotEmpty(result);
             Assert.Multiple(() =>
             {
-                for (int i = 0; i < expectedAuthorsList.Count; i++)
-                {
-                    var expectedAuthor = expectedAuthorsList[i];
-                    var actualAuthor = sortedActualAuthorList[i];
+                Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+                Assert.Null(deletedProduct);
+            });
 
-                    Assert.Equal(expectedAuthor.Id, actualAuthor.Id);
-                    Assert.Equal(expectedAuthor.UserId, actualAuthor.UserId);
-                    Assert.Equal(expectedAuthor.Biography, actualAuthor.Biography);
-                    Assert.Equal(expectedAuthor.SocialMediaLinks, actualAuthor.SocialMediaLinks);
-                    Assert.Equal(expectedAuthor.NumberOfPosts, actualAuthor.NumberOfPosts);
+        }
+
+
+        [Fact]
+        public async Task GetAllAuthors_ReturnsAllAuthorsDto_OkResult()
+        {
+            //Act
+            var response = await _client.GetAsync("api/Authors/all");
+            var authors = await response.Content.ReadFromJsonAsync<IEnumerable<AuthorDto>>();
+
+            using var scope = _factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ArtMarketPlaceDbContext>();
+            var existingAuthors = context.Authors.ToList();
+
+            //Assert
+            Assert.NotNull(authors);
+            Assert.Multiple(() =>
+            {
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                foreach (var existingAuthor in existingAuthors)
+                {
+                    var authorDto = authors.FirstOrDefault(p => p.Id == existingAuthor.Id);
+                    Assert.NotNull(authorDto);
+                    Assert.Equal(existingAuthor.UserId, authorDto.UserId);
+                    Assert.Equal(existingAuthor.SocialMediaLinks, authorDto.SocialMediaLinks);
+                    Assert.Equal(existingAuthor.Country, authorDto.Country);
+                    Assert.Equal(existingAuthor.Biography, authorDto.Biography);
+                    Assert.Equal(existingAuthor.NumberOfPosts, authorDto.NumberOfPosts);
                 }
             });
-            SeedHelper.CleanDatabase(context);
         }
 
         [Fact]
-        public async Task GetAllOrders_Returns_NotFoundObjectResult()
+        public async Task GetAuthorById_Returns_AuthorDto()
         {
             //Arrange
-            var context = _fixture.GetContext();
+            int authorId = 1;
 
             //Act
-            var result = await _controller.GetAllAuthors();
+            var response = await _client.GetAsync($"api/Authors/{authorId}");
+            var author = await response.Content.ReadFromJsonAsync<Author>();
 
-            var response = Assert.IsType<NotFoundObjectResult>(result);
-            Assert.Equal("There are no authors", response.Value);
-            SeedHelper.CleanDatabase(context);
+            //Assert
+            Assert.NotNull(author);
+            Assert.Multiple(() =>
+            {
+                Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+                Assert.Equal(authorId, author.Id);
+            });
+        }
+
+
+
+        [Fact]
+        public async Task GetAuthorBy_InvalidId_Returns_NotFoundResponse()
+        {
+            //Arrange
+            int authorId = 13;
+
+            //Act
+            var response = await _client.GetAsync($"api/Authors/{authorId}");
+
+            //Assert       
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+
+
+        public void Dispose()
+        {
+            using var scope = _factory.Services.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ArtMarketPlaceDbContext>();
+            context.Database.EnsureDeleted();
+
+            _factory.Dispose();
+            _client.Dispose();
         }
     }
 }

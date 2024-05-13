@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 using MarketPlace.Application.Abstractions.Repositories;
 using MarketPlace.Application.Exceptions;
 using MarketPlace.Application.Paints.Responses;
@@ -15,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.App.Products.Commands
 {
-    public record CreateProduct(string Title, string Description, int CategoryID, int AuthorId, int Quantity, decimal Price, DateTime CreatedDate) : IRequest<ProductDto>;
+    public record CreateProduct(string Title, string Description, int CategoryID, int AuthorId, int Quantity, decimal Price, DateTime CreatedDate) : ICommand<ProductDto>;
 
     public class CreateProductHandler : IRequestHandler<CreateProduct, ProductDto>
     {

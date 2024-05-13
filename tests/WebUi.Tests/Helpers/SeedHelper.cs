@@ -155,6 +155,7 @@ namespace WebUi.Tests.Helpers
             AuthorsHelper.SeedAuthors(context);
             CategoriesHelper.SeedCategories(context);
             SeedUsers(context);
+            SeedPromocodes(context);
             context.SaveChanges();
         }
 
@@ -168,6 +169,19 @@ namespace WebUi.Tests.Helpers
             };
 
             context.Users.AddRange(users);
+        }
+
+
+        public static void SeedPromocodes(ArtMarketPlaceDbContext context)
+        {
+            var promocodes = new List<Promocode>
+            {
+                new Promocode { Id = 1, Code = "DISCOUNT10" },
+                new Promocode { Id = 2, Code = "DISCOUNT20" },
+                new Promocode { Id = 3, Code = "DISCOUNT30" },
+        
+            };
+            context.Promocodes.AddRange(promocodes);    
         }
         public static void CleanDatabase(ArtMarketPlaceDbContext context)
         {

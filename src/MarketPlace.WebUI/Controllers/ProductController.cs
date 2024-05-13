@@ -3,6 +3,7 @@ using MarketPlace.Application.App.Products.GetPagedResult;
 using MarketPlace.Application.Products.Delete;
 using MarketPlace.Application.Products.GetPagedResult;
 using MarketPlace.Domain.Models;
+using MarketPlace.WebUI.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,7 @@ namespace MarketPlace.WebUI.Controllers
 
        
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> CreateProduct(CreateProduct command)
         {
             var productDto = await _mediator.Send(command);
@@ -30,20 +32,15 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateProduct(UpdatePruduct command)
+        [ValidateModel]
+        public async Task<IActionResult> UpdateProduct(UpdateProduct command)
         {
-            try
-            {
-                var updateProducDto = await _mediator.Send(command);
-                return Ok(updateProducDto);
-            }
-            catch(Exception ex) 
-            {
-                return NotFound(ex.Message);            
-            }
+            var updateProducDto = await _mediator.Send(command);
+            return Ok(updateProducDto);
         }
 
         [HttpGet("{id}")]
+
         public async Task<IActionResult> GetProduct(int id)
         {
             var productDto = await _mediator.Send(new GetProductByIdQuerry(id));
@@ -60,11 +57,10 @@ namespace MarketPlace.WebUI.Controllers
         public async Task<IActionResult> GetAllProducts()
         {
             var producs = await _mediator.Send(new GetAllProductsQuerry());
-
             return Ok(producs);
         }
 
-        [HttpGet("paged")]
+        [HttpPost("paged")]
         public async Task<IActionResult> GetPagedProducts(GetPagedProductsQuerry command)
         {
             var result = await _mediator.Send(command);
@@ -75,10 +71,6 @@ namespace MarketPlace.WebUI.Controllers
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product =  await _mediator.Send(new DeleteProduct(id));
-            if(product == null)
-            {
-                return NotFound($"Product with Id{id} does not exist");
-            }
             return Ok("The Product was deleted successfuly");  
         }
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 using MarketPlace.Application.Exceptions;
 using MarketPlace.Application.Paints.Responses;
 using MarketPlace.Domain.Models;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.Products.Delete
 {
-    public record DeleteProduct(int Id) : IRequest<ProductDto>;
+    public record DeleteProduct(int Id) : ICommand<ProductDto>;
     public class DeleteProductHandler : IRequestHandler<DeleteProduct, ProductDto>
     {
         private readonly IMapper _mapper;

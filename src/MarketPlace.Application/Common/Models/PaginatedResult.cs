@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.Common.Models
 {
-    public class PaginateResult<T> where T : class
+    public class PaginatedResult<T> where T : class
     {
         public int PageIndex { get; set; }
         public int PageSize { get; set; }

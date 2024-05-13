@@ -1,5 +1,8 @@
-﻿using MarketPlace.Application;
+﻿using AutoMapper;
+using MarketPlace.Application;
 using MarketPlace.Application.Abstractions.Repositories;
+using MarketPlace.Application.Common.Models;
+using MarketPlace.Application.Extensions;
 using MarketPlace.Domain.Models;
 using MarketPlace.Infrastructure.Persistance.Context;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +32,7 @@ namespace MarketPlace.Infrastructure.Repositories
 
         public virtual async Task<List<TEntity>> GetAllAsync()
         {
-            return await _context.Set<TEntity>().ToListAsync();
+            return await _context.Set<TEntity>().Take(100).ToListAsync();
         }
 
         public async Task<TEntity> AddAsync(TEntity entity)
@@ -74,6 +77,11 @@ namespace MarketPlace.Infrastructure.Repositories
                 entities = entities.Include(includeProperty);
             }
             return entities;
+        }
+
+        public virtual async Task<PaginatedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper )  where TDto : class
+        {
+            return await _context.Set<TEntity>().CreatePaginatedResultAsync<TEntity, TDto>(pagedRequest, mapper);
         }
     }
 }

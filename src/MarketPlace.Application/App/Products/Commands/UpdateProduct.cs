@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 using MarketPlace.Application.Exceptions;
 using MarketPlace.Application.Paints.Responses;
 using MarketPlace.Domain.Models;
@@ -14,8 +15,8 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.App.Products.Commands
 {
-    public record UpdatePruduct(int Id,string Title, string Description, int CategoryID, int AuthorId, int Quantity, decimal Price, DateTime CreatedDate) : IRequest<ProductDto>;
-    public class UpdateProductHandler : IRequestHandler<UpdatePruduct, ProductDto>
+    public record UpdateProduct(int Id,string Title, string Description, int CategoryID, int AuthorId, int Quantity, decimal Price, DateTime CreatedDate) : ICommand<ProductDto>;
+    public class UpdateProductHandler : IRequestHandler<UpdateProduct, ProductDto>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -26,7 +27,7 @@ namespace MarketPlace.Application.App.Products.Commands
             _unitOfWork = unitofwork;
             _logger = loggerFactory.CreateLogger<UpdateProductHandler>();
         }
-        public async Task<ProductDto> Handle(UpdatePruduct request, CancellationToken cancellationToken)
+        public async Task<ProductDto> Handle(UpdateProduct request, CancellationToken cancellationToken)
         {
             var entity = await _unitOfWork.Products.GetByIdAsync(request.Id);
 

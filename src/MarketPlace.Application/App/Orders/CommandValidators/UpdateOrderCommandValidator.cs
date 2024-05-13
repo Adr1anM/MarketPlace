@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
-using MarketPlace.Application.Orders.Create;
-using MarketPlace.Domain.Models;
+using MarketPlace.Application.Orders.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.App.Orders.CommandValidators
 {
-    public class CreateOrderCommandValidator : AbstractValidator<CreateOrder>
+    public class UpdateOrderCommandValidator : AbstractValidator<UpdateOrder>
     {
-        public CreateOrderCommandValidator()
+        public UpdateOrderCommandValidator()
         {
-
-
             RuleFor(o => o.CretedById)
-                .GreaterThan(0)
-                .NotEmpty();
+               .GreaterThan(0)
+               .NotEmpty();
 
             RuleFor(o => o.CreatedDate)
                 .NotEmpty();
@@ -25,7 +22,7 @@ namespace MarketPlace.Application.App.Orders.CommandValidators
             RuleFor(o => o.Quantity)
                 .GreaterThan(0)
                 .NotEmpty();
-
+                
             RuleFor(o => o.ShippingAdress)
                 .NotEmpty();
 
@@ -40,7 +37,6 @@ namespace MarketPlace.Application.App.Orders.CommandValidators
             RuleFor(o => o.PromocodeId)
                 .GreaterThan(0)
                 .NotEmpty();
-
         }
     }
 }

@@ -10,7 +10,7 @@ namespace MarketPlace.Domain.Models
 {
     public class Product : Entity
     {
-        [MaxLength(100)]
+        [MaxLength(250)]
         public string Title { get; set; }
 
         [MaxLength(300)]
