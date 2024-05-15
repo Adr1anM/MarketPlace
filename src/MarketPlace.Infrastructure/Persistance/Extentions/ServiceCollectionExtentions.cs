@@ -18,6 +18,9 @@ namespace MarketPlace.Infrastructure.Persistance.Extentions
 
             });
 
+            services.AddIdenttyJwtAuthentication();
+
+
             return services;
         }
     }

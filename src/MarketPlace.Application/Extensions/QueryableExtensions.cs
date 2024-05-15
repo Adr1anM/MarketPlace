@@ -14,7 +14,7 @@ namespace MarketPlace.Application.Extensions
 {
     public static class QueryableExtensions
     {
-        public async static Task<PaginatedResult<TDto>> CreatePaginatedResultAsync<TEntity, TDto>(this IQueryable<TEntity> query, PagedRequest pagedRequest, IMapper mapper)
+        public async static Task<Common.Models.PagedResult<TDto>> CreatePaginatedResultAsync<TEntity, TDto>(this IQueryable<TEntity> query, PagedRequest pagedRequest, IMapper mapper)
             where TEntity : Entity
             where TDto : class
         {
@@ -30,7 +30,7 @@ namespace MarketPlace.Application.Extensions
 
             var listResult = await projectionResult.ToListAsync();
 
-            return new PaginatedResult<TDto>()
+            return new Common.Models.PagedResult<TDto>()
             {
                 Items = listResult,
                 PageSize = pagedRequest.PageSize,
@@ -65,7 +65,7 @@ namespace MarketPlace.Application.Extensions
                     predicate.Append($" {requestFilters.LogicalOperator} ");
                 }
                 predicate.Append(requestFilters.Filters[i].Path + $".{nameof(string.Contains)}(@{i})");
-            }
+            }   
 
             if (requestFilters.Filters.Any())
             {

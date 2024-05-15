@@ -33,4 +33,8 @@
     <ProjectReference Include="..\MarketPlace.Domain\MarketPlace.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="App\Login\Responses\" />
+  </ItemGroup>
+
 </Project>

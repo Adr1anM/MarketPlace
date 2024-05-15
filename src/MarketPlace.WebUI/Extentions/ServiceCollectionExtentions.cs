@@ -17,6 +17,8 @@ using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 using MediatR;
 using MarketPlace.Application.Abstractions.Behaviors;
 using MarketPlace.Application.App.Products.CommandValidator;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using MarketPlace.WebUI.OptionsSetup;
 
 namespace MarketPlace.WebUI.Extentions
 {
@@ -36,11 +38,12 @@ namespace MarketPlace.WebUI.Extentions
             });
 
             builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
-            builder.Services.AddIdentity<User, Role>()
-            .AddEntityFrameworkStores<ArtMarketPlaceDbContext>()
-            .AddDefaultTokenProviders();
-            builder.Services.AddScoped<RoleManager<Role>>();
 
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer();
+            builder.Services.ConfigureOptions<JwtOptionsSetup>();
+            builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
+                
 
         }
     }

@@ -40,7 +40,6 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpGet("all")]
-        [ValidateModel]
         public async Task<IActionResult> GetAllAuthors()
         {
             var authors = await _mediator.Send(new GetAllAuthorsQuerry());

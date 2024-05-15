@@ -34,7 +34,7 @@ namespace MarketPlace.Infrastructure.Repositories
                     .ToListAsync();
         }
 
-        public override Task<PaginatedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper) where TDto : class
+        public override Task<PagedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper) where TDto : class
         {
             return base.GetPagedData<TDto>(pagedRequest, mapper);
         }

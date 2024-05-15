@@ -18,6 +18,6 @@ namespace MarketPlace.Application.Abstractions.Repositories
         Task<TEntity> AddAsync(TEntity entity);
         Task<TEntity> UpdateAsync(TEntity entity);
         Task<TEntity> DeleteAsync(int id);
-        Task<PaginatedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper) where TDto : class;
+        Task<PagedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper) where TDto : class;
     }
 }

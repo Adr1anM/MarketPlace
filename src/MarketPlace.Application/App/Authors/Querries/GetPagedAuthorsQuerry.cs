@@ -14,9 +14,9 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.App.Authors.Querries
 {
-    public record GetPagedAuthorsQuerry(PagedRequest PagedRequest) : IRequest<PaginatedResult<AuthorDto>>;
+    public record GetPagedAuthorsQuerry(PagedRequest PagedRequest) : IRequest<PagedResult<AuthorDto>>;
 
-    public class GetPagedAuthorsQuerryHandler : IRequestHandler<GetPagedAuthorsQuerry, PaginatedResult<AuthorDto>>
+    public class GetPagedAuthorsQuerryHandler : IRequestHandler<GetPagedAuthorsQuerry, PagedResult<AuthorDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -25,7 +25,7 @@ namespace MarketPlace.Application.App.Authors.Querries
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<PaginatedResult<AuthorDto>> Handle(GetPagedAuthorsQuerry request, CancellationToken cancellationToken)
+        public async Task<PagedResult<AuthorDto>> Handle(GetPagedAuthorsQuerry request, CancellationToken cancellationToken)
         {
             var result = await _unitOfWork.Authors.GetPagedData<AuthorDto>(request.PagedRequest, _mapper);
 

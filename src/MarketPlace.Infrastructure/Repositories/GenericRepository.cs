@@ -79,7 +79,7 @@ namespace MarketPlace.Infrastructure.Repositories
             return entities;
         }
 
-        public virtual async Task<PaginatedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper )  where TDto : class
+        public virtual async Task<PagedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper )  where TDto : class
         {
             return await _context.Set<TEntity>().CreatePaginatedResultAsync<TEntity, TDto>(pagedRequest, mapper);
         }

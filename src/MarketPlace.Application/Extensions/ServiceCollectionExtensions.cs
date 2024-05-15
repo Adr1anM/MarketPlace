@@ -2,6 +2,8 @@
 using MarketPlace.Application.Abstractions.Behaviors;
 using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.CommandValidators;
+using MarketPlace.Application.App.Authors.Responses;
+using MarketPlace.Application.App.Login.Commands;
 using MarketPlace.Application.App.Orders.CommandValidators;
 using MarketPlace.Application.App.Products.Commands;
 using MarketPlace.Application.App.Products.CommandValidator;
@@ -27,7 +29,7 @@ namespace MarketPlace.Application.Extensions
             var assembly = Assembly.GetExecutingAssembly();
             services.AddValidatorsFromAssembly(assembly);
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateProduct).Assembly));
-
+           
 
             services.AddTransient<IValidator<CreateOrder>, CreateOrderCommandValidator>();
             services.AddTransient<IValidator<UpdateOrder>, UpdateOrderCommandValidator>();
