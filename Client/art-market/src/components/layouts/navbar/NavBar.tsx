@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect, CSSProperties } from 'react';
-import './navBar.css';
+import React, { useState, useRef, useEffect } from 'react';
+import './styles/navBar.css';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -11,93 +11,33 @@ import PersonAdd from '@mui/icons-material/PersonAdd';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import { Box } from '@mui/material';
-import LogInModal from './LogInModal';
-
-
+import LogInModal from './navbarLogin/LogInModal';
+import MegaMenu from './megaMenues/MegaMenu';
+import {artistsSections , artworksSections} from '../../../dummyDataStore/megamenyData'
+import {Link, NavLink} from 'react-router-dom'
 
 
 const NavBar: React.FC = () => {
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [showArtistsMegaMenu, setShowArtistsMegaMenu] = useState(false);
+  const [showArtworksMegaMenu, setShowArtworksMegaMenu] = useState(false);
   const open = Boolean(anchorEl);
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
-  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
-  const timeoutRef = useRef<number | null>(null);
-
-  const showDropdown = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    setIsDropdownVisible(true);
-  };
-
-  const hideDropdown = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = window.setTimeout(() => {
-      setIsDropdownVisible(false);
-    }, 200);
-  };
-
-  const handleMouseEnter = () => {
-    showDropdown();
-  };
-
-  const handleMouseLeave = () => {
-    hideDropdown();
-  };
-
- 
-
-  useEffect(() => {
-    const handleDocumentClick = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node) &&
-        buttonRef.current &&
-        !buttonRef.current.contains(e.target as Node)
-      ) {
-        setIsDropdownVisible(false);
-      }
-    };
-
-    document.addEventListener('click', handleDocumentClick);
-    return () => {
-      document.removeEventListener('click', handleDocumentClick);
-    };
-  }, []);
-
-
-  const dropdownButtonStyle: CSSProperties  = {
-    position: 'fixed',
-    top: buttonRef.current?.getBoundingClientRect().bottom,
-    left: 0,
-    right: 0,
-    width: '100vw',
-    border: '1px solid #ccc',
-    backgroundColor: '#fff',
-    boxShadow: '0px 8px 16px rgba(0,0,0,0.2)',
-    zIndex: 1,
-    display: 'flex',
-    justifyContent: 'center',
-  };
 
   return (
-    <>
-      <div className="header-menu-wrapper-desktop">
-        <header className="artshop-header">
+      <div className="header-menu-wrapper-desktop" style={{backgroundColor: "red"}}>
+        <header className="artshop-header" >
           <div className="header-content">
-            <div>
-              <a className="header-title" href="/">ArtIs</a>
+            <div className="header-title">
+              <NavLink style={{color: 'black' , fontWeight: '700'}} to="/home">ArtIs</NavLink>
             </div>
             <div className="header-search-wrapper">
               <input className="search-input" type="text" placeholder="Search..." />
@@ -186,52 +126,39 @@ const NavBar: React.FC = () => {
         <nav className="nav">
           <div className="nav-container">
             <div className="nav-container-section">
-              <button
-                ref={buttonRef}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-                style={{ background: 'black' }}
+              <div 
+                className="nav-content" 
+                onMouseEnter={() => setShowArtistsMegaMenu(true)}
+                onMouseLeave={() => setShowArtistsMegaMenu(false)}
               >
-                <a href="" style={{ color: 'white' }}>Hover me</a>
-              </button>
-              {isDropdownVisible && (
-                <div
-                  ref={dropdownRef}
-                  onMouseEnter={handleMouseEnter}
-                  onMouseLeave={handleMouseLeave}
-                  style={dropdownButtonStyle}
-                >
-                  <ul style={{ listStyleType: 'none', margin: 0, padding: '10px', color: 'black' }}>
-                    <li>
-                      <a href=""> category 1</a>
-                    </li>
-                    <li>Category 2</li>
-                    <li>Category 3</li>
-                    <li>Category 4</li>
-                  </ul>
-                </div>
-              )}
-              <div className="nav-content">
-                <a href="/second-side">Artworks</a>
-                <div className="dropdown">
-                  <a href="/artworks/paintings">Paintings</a>
-                  <a href="/artworks/sculptures">Sculptures</a>
-                  <a href="/artworks/photography">Photography</a>
-                </div>
+                <NavLink to="/artists">Artists</NavLink>
+                {showArtistsMegaMenu && (
+                  <MegaMenu sections={artistsSections} className="artists-megamenu" isOpen={showArtistsMegaMenu} />
+                )}
               </div>
-              <div className="nav-content"><a href="/collections">Collections</a></div>
-              <div className="nav-content"><a href="/auctions">Auctions</a></div>
-            </div>
-            <div className="nav-container-section">
-              <div className="nav-content"><a href="/buy-art">Buy Art</a></div>
-              <div className="nav-content"><a href="/media">Media</a></div>
-              <div className="nav-content"><a href="/seller">Seller</a></div>
-              <div className="nav-content"><a href="/about-us">About Us</a></div>
-            </div>
-          </div>
+              <div 
+                className="nav-content" 
+                onMouseEnter={() => setShowArtworksMegaMenu(true)}
+                onMouseLeave={() => setShowArtworksMegaMenu(false)}
+              >
+                <NavLink to="/artworks">Artworks</NavLink>
+                {showArtworksMegaMenu && (
+                  <MegaMenu sections={artworksSections} className="artworks-megamenu" isOpen={showArtworksMegaMenu} />
+                )}
+              </div>
+                  <div className="nav-content" ><NavLink to="/collections">Collections</NavLink></div>
+                  <div className="nav-content" ><NavLink to="/auctions">Auctions</NavLink></div>
+              </div>
+
+              <div className="nav-container-section">
+                  <div className="nav-content" ><NavLink to="/buy-art">Buy Art</NavLink></div>
+                  <div className="nav-content" ><NavLink to="/media">Media</NavLink></div>
+                  <div className="nav-content" ><NavLink to="/seller">Seller</NavLink></div>
+                  <div className="nav-content" ><NavLink to="/about-us">About-Us</NavLink></div>
+              </div>
+          </div>                   
         </nav>
       </div>
-    </>
   );
 };
 

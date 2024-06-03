@@ -10,8 +10,8 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { Fade, IconButton, InputAdornment } from '@mui/material';
 import { Height, Visibility } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useAuth } from '../../../contexts/AuthContext';
-import axios from '../../../configurations/axios/axiosConfig'; 
+import { useAuth } from '../../../../contexts/AuthContext';
+import axios from '../../../../configurations/axios/axiosConfig'; 
 import ForgetPasswordModal from './ForgetPasswordModal';
 
 export interface LogInModel {
@@ -166,8 +166,7 @@ const LogInModal: React.FC = () => {
                     <ErrorMessage name="password" render={(msg) => <CustomErrorComponent>{msg}</CustomErrorComponent>} />
                   </div>
                   <div style={{alignItems: 'center', display: 'flex', justifyContent: 'flex-end' ,marginRight: '5px'}}>
-                    <Button style={buttonStyle} onClick={handleforgetPasswordModalOpen}  variant="text">Forgot Password?</Button>
-                    <ForgetPasswordModal isOpened = {forgetPasswordModal} onClose={handleforgetPasswordModalClose}/>
+                    <Button style={buttonStyle} onClick={handleforgetPasswordModalOpen}  variant="text">Forgot Password?</Button>     
                   </div>
                   <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
                     Submit
@@ -178,6 +177,7 @@ const LogInModal: React.FC = () => {
           </Formik>
         </Box>
       </Modal>
+      <ForgetPasswordModal isOpened = {forgetPasswordModal} onClose={handleforgetPasswordModalClose}/>
     </div>
   );
 };

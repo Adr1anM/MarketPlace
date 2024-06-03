@@ -1,0 +1,74 @@
+/* MegaMenu.css */
+.megamenu-wrapper {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 222%;
+    z-index: 1000;
+    opacity: 0;
+    transform-origin: center;
+    transform: scaleY(0);
+    transition: opacity 0.5s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .megamenu-wrapper.active {
+    opacity: 2;
+    transform: scaleY(1);
+    pointer-events: auto;
+  }
+  
+  .megamenu-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform-origin: top center;
+  }
+  
+  .megamenu-container {
+    position: relative;
+    max-width: 1200px; 
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .megamenu {
+    display: flex;
+    padding: 30px 0; 
+    position: relative; 
+  }
+
+  .megamenu-wrapper.active .megamenu {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .megamenu-section {
+    flex: 1;
+    padding: 0 20px;
+  }
+  
+  .megamenu-section h3 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 18px;
+  }
+  
+  .megamenu-section a {
+    display: block;
+    color: #666;
+    text-decoration: none;
+    margin-bottom: 12px;
+    transition: color 0.3s, transform 0.2s;
+    font-size: 16px;
+  }
+  
+  .megamenu-section a:hover {
+    color: #007bff;
+    transform: translateX(5px);
+  }
+  
