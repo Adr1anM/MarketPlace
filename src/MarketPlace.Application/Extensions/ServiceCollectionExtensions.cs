@@ -2,23 +2,14 @@
 using MarketPlace.Application.Abstractions.Behaviors;
 using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.CommandValidators;
-using MarketPlace.Application.App.Authors.Responses;
-using MarketPlace.Application.App.Login.Commands;
 using MarketPlace.Application.App.Orders.CommandValidators;
 using MarketPlace.Application.App.Products.Commands;
 using MarketPlace.Application.App.Products.CommandValidator;
 using MarketPlace.Application.Orders.Create;
 using MarketPlace.Application.Orders.Update;
-using MarketPlace.Domain.Models.Auth;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarketPlace.Application.Extensions
 {

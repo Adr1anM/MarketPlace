@@ -255,6 +255,10 @@ namespace MarketPlace.Infrastructure.Migrations
                     b.Property<int>("NumberOfPosts")
                         .HasColumnType("int");
 
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("SocialMediaLinks")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -309,7 +313,7 @@ namespace MarketPlace.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuthorCategory");
+                    b.ToTable("AuthorCategories");
                 });
 
             modelBuilder.Entity("MarketPlace.Domain.Models.CategoriesSubcategories", b =>
@@ -435,8 +439,12 @@ namespace MarketPlace.Infrastructure.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
 
+                    b.Property<byte[]>("ImageData")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<decimal>("Price")
-                        .HasColumnType("decimal(5, 2)");
+                        .HasColumnType("decimal(9, 2)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

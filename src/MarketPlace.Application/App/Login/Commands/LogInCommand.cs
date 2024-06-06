@@ -13,7 +13,7 @@ using System.Windows.Input;
 
 namespace MarketPlace.Application.App.Login.Commands
 {
-    public record LogInCommand(string UserName, string Password) : IRequest<string>;
+    public record LogInCommand(string UserName, string Password) : ICommand<string>;
 
     public class LogInCommandHandler : IRequestHandler<LogInCommand, string>
     {

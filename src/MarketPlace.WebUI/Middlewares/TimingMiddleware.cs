@@ -1,8 +1,4 @@
-﻿using MarketPlace.WebUI.Middlewares.Models;
-using Microsoft.AspNetCore.Http;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Net;
+﻿using System.Diagnostics;
 
 namespace MarketPlace.WebUI.Middlewares
 {

@@ -3,12 +3,6 @@ using MarketPlace.Application.Abstractions.Repositories;
 using MarketPlace.Domain.Models;
 using MarketPlace.Infrastructure.Persistance.Context;
 using MarketPlace.Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MarketPlace.Infrastructure
 {

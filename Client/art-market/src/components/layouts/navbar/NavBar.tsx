@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './styles/navBar.css';
+import '../styles/navBar.css';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -15,9 +15,11 @@ import LogInModal from './navbarLogin/LogInModal';
 import MegaMenu from './megaMenues/MegaMenu';
 import {artistsSections , artworksSections} from '../../../dummyDataStore/megamenyData'
 import {Link, NavLink} from 'react-router-dom'
+import { useAuth } from '../../../contexts/AuthContext';
 
 
 const NavBar: React.FC = () => {
+  const { logout } = useAuth();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [showArtistsMegaMenu, setShowArtistsMegaMenu] = useState(false);
   const [showArtworksMegaMenu, setShowArtworksMegaMenu] = useState(false);
@@ -31,6 +33,11 @@ const NavBar: React.FC = () => {
     setAnchorEl(null);
   };
 
+
+  function handleLoggOut(){
+    logout();
+    handleClose();
+  }
 
   return (
       <div className="header-menu-wrapper-desktop" style={{backgroundColor: "red"}}>
@@ -115,7 +122,7 @@ const NavBar: React.FC = () => {
               </ListItemIcon>
               Settings
             </MenuItem>
-            <MenuItem onClick={handleClose}>
+            <MenuItem onClick={handleLoggOut}>
               <ListItemIcon>
                 <Logout fontSize="small" />
               </ListItemIcon>
@@ -130,6 +137,7 @@ const NavBar: React.FC = () => {
                 className="nav-content" 
                 onMouseEnter={() => setShowArtistsMegaMenu(true)}
                 onMouseLeave={() => setShowArtistsMegaMenu(false)}
+                onClick={() => setShowArtistsMegaMenu(false)}
               >
                 <NavLink to="/artists">Artists</NavLink>
                 {showArtistsMegaMenu && (
@@ -140,6 +148,7 @@ const NavBar: React.FC = () => {
                 className="nav-content" 
                 onMouseEnter={() => setShowArtworksMegaMenu(true)}
                 onMouseLeave={() => setShowArtworksMegaMenu(false)}
+                onClick={() => setShowArtworksMegaMenu(false)}
               >
                 <NavLink to="/artworks">Artworks</NavLink>
                 {showArtworksMegaMenu && (

@@ -1,10 +1,6 @@
 ﻿using MarketPlace.Domain.Models.Auth;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MarketPlace.Domain.Models
 {
@@ -23,6 +19,7 @@ namespace MarketPlace.Domain.Models
         [MaxLength(200)]
         public string SocialMediaLinks { get; set; }
         public int NumberOfPosts { get; set; }
+        public string PhoneNumber { get; set; } 
         public List<Product> Products { get; } = [];
         public List<AuthorAuthorCategory> AuthorAuthorCategories { get; } = [];
 

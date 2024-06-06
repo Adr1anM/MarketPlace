@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MarketPlace.Domain.Models
 {
@@ -21,8 +17,9 @@ namespace MarketPlace.Domain.Models
         public Author Author { get; set; }
         public int Quantity { get; set; }
 
-        [Column(TypeName = "decimal(5, 2)")]
+        [Column(TypeName = "decimal(9, 2)")]
         public decimal Price { get; set; }
+        public byte[] ImageData { get; set; }   
         public DateTime CreatedDate { get; set; }
         public List<ProductOrder> ProductOrders { get; } = [];
 

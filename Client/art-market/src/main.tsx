@@ -1,14 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
 import './index.css'
 import {BrowserRouter, RouterProvider, createBrowserRouter} from "react-router-dom";
 import ArtworksPage from './components/pages/ArtworksPage.tsx';
-import Layout from './routes/Layout.tsx';
+import Layout from './components/pages/Layout.tsx';
 import { AuthProvider } from './contexts/AuthContext.tsx';
 import  ErrorPage  from './components/ErrorPage.tsx';
-import LogInComponent from './components/LogIn.tsx';
 import ArtistsPage from './components/pages/ArtistsPage.tsx';
+import HomePage from './components/pages/HomePage'
 
 const router = createBrowserRouter([{
   path: '/',
@@ -17,15 +16,11 @@ const router = createBrowserRouter([{
   children: [
     {
       path: '/',
-      element: <ArtworksPage />,
+      element: <HomePage />,
     },
     {
       path: '/home',
-      element: <LogInComponent />,
-    },
-    {
-      path: '/products',
-      element: <LogInComponent />,
+      element: <HomePage />,
     },
     {
       path: '/artworks',

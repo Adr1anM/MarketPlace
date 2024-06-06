@@ -4,6 +4,7 @@ using MarketPlace.Application.Orders.Delete;
 using MarketPlace.Application.Orders.Update;
 using MarketPlace.WebUI.Filters;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,7 @@ namespace MarketPlace.WebUI.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [Authorize]
         public async Task<IActionResult> CreateOrder(CreateOrder command)
         {
             var orderResult = await _mediator.Send(command);
@@ -30,6 +32,7 @@ namespace MarketPlace.WebUI.Controllers
 
         [HttpPut]
         [ValidateModel]
+        [Authorize]
         public async Task<IActionResult> UpdateOrder(UpdateOrder command)
         {
             var result = await _mediator.Send(command);          
@@ -37,6 +40,7 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteOrder(int id)
         {
             var orderResult = await _mediator.Send(new DeleteOrder(id));

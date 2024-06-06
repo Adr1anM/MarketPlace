@@ -54,7 +54,6 @@ const ForgetPasswordModal: FC<ForgetPasswordModalProps> = ({isOpened , onClose})
        
     }
   }
-
   
     return(
     <div>
@@ -78,8 +77,8 @@ const ForgetPasswordModal: FC<ForgetPasswordModalProps> = ({isOpened , onClose})
             >
                 <CloseIcon />
             </IconButton>
-          <Typography id="modal-modal-title" variant="h6" component="h2" style={{color: 'black' , marginBottom: '16px'}}>
-           <h3>Resert your password</h3>
+          <Typography id="modal-modal-title" variant="h5"  style={{color: 'black' , marginBottom: '16px'}}>
+            Resert your password
           </Typography>
           <Formik
             initialValues={initialValues}

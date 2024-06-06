@@ -1,4 +1,4 @@
-import { Avatar, Card, CardActions, CardContent, CardHeader, Collapse, IconButton, Typography } from '@mui/material';
+import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, Collapse, IconButton, Typography } from '@mui/material';
 import { red } from '@mui/material/colors';
 import React from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -31,21 +31,20 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
         title={artwork.title}
         subheader={new Date(artwork.createdDate).toLocaleDateString()}
       />
+       <CardMedia
+        component="img"
+        height="194"
+        image="https://images.joseartgallery.com/100736/what-kind-of-art-is-popular-right-now.jpg"
+        alt="Paella dish"
+      />
       <CardContent>
         <Typography noWrap variant="body2" color="text.secondary">
           {artwork.description}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="show more" onClick={handleExpandClick}>
-          <ExpandMoreIcon />
-        </IconButton>
-      </CardActions>
-      <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <Typography paragraph>Price: ${artwork.price}</Typography>
         </CardContent>
-      </Collapse>
     </Card>
   );
 };

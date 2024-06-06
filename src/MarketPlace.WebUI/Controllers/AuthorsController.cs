@@ -2,6 +2,7 @@
 using MarketPlace.Application.App.Authors.Querries;
 using MarketPlace.WebUI.Filters;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,7 @@ namespace MarketPlace.WebUI.Controllers
 
         [HttpPost]
         [ValidateModel]
+        [Authorize]
         public async Task<IActionResult> CreateAuthor(CreateAuthor command)
         {
             var result = await _mediator.Send(command);
@@ -29,6 +31,7 @@ namespace MarketPlace.WebUI.Controllers
 
         [HttpPut]
         [ValidateModel]
+        [Authorize]
         public async Task<IActionResult> UpdateAuthor(UpdateAuthor command)
         {
             var result = await _mediator.Send(command);

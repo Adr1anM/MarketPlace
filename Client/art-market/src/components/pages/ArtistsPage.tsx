@@ -4,14 +4,15 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import ArtworkCard from '../cards/ArtworkCard';
-import { dummyArtworks } from '../../dummyDataStore/artworksData';
 import { dummyAuthors } from '../../dummyDataStore/artistsData';
 import ArtistCard from '../cards/AtistCard';
+import { useAuth } from '../../contexts/AuthContext';
+import toast from 'react-hot-toast';
 
 const ContentContainer = styled(Container)({
    margin: "2rem 0"
   });
+
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -24,7 +25,12 @@ const Item = styled(Paper)(({ theme }) => ({
 
 
 const ArtistsPage = () =>{
+    const {isLoggedIn} = useAuth();
 
+    if(!isLoggedIn){
+        toast.error("You need to sign in");
+        return null;
+    }
     return(
         <>
             <CssBaseline />

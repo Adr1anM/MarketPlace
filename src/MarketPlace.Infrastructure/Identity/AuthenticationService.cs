@@ -1,11 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using MarketPlace.Domain.Models.Auth;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using MarketPlace.Application.Abstractions.Services;
 using Microsoft.Extensions.Logging;
 using MarketPlace.Application.App.Login.AuthModels;

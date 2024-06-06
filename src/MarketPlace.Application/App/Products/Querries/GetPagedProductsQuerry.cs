@@ -1,13 +1,8 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.Paints.Responses;
-using MarketPlace.Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace MarketPlace.Application.Products.GetPagedResult
 {

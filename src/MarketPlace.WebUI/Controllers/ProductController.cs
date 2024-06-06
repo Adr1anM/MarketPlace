@@ -5,6 +5,7 @@ using MarketPlace.Application.Products.GetPagedResult;
 using MarketPlace.Domain.Models;
 using MarketPlace.WebUI.Filters;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -25,6 +26,7 @@ namespace MarketPlace.WebUI.Controllers
        
         [HttpPost]
         [ValidateModel]
+        [Authorize]
         public async Task<IActionResult> CreateProduct(CreateProduct command)
         {
             var productDto = await _mediator.Send(command);
@@ -33,6 +35,7 @@ namespace MarketPlace.WebUI.Controllers
 
         [HttpPut]
         [ValidateModel]
+        [Authorize]
         public async Task<IActionResult> UpdateProduct(UpdateProduct command)
         {
             var updateProducDto = await _mediator.Send(command);
@@ -40,7 +43,6 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpGet("{id}")]
-
         public async Task<IActionResult> GetProduct(int id)
         {
             var productDto = await _mediator.Send(new GetProductByIdQuerry(id));
@@ -68,6 +70,7 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product =  await _mediator.Send(new DeleteProduct(id));
