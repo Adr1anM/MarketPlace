@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Text;
 using MarketPlace.Domain.Models;
 using System.Linq.Dynamic.Core;
+using System;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace MarketPlace.Application.Extensions
 {
@@ -25,6 +27,11 @@ namespace MarketPlace.Application.Extensions
             projectionResult = projectionResult.Sort(pagedRequest);
 
             var listResult = await projectionResult.ToListAsync();
+            foreach (var propertyValue in listResult)
+            {
+                System.Diagnostics.Debug.WriteLine($"!!!!!!!!!!!!!!!{propertyValue}");
+            }
+
 
             return new Common.Models.PagedResult<TDto>()
             {
@@ -50,6 +57,17 @@ namespace MarketPlace.Application.Extensions
             return query;
         }
 
+        public static char MappToOperator(string oper)
+        {
+            switch (oper)
+            {
+                case "lt": return '<';
+                case "gt": return '>';
+                case "eq": return '=';
+                default: throw new NotImplementedException();
+            }
+        }
+
         private static IQueryable<T> ApplyFilters<T>(this IQueryable<T> query, PagedRequest pagedRequest)
         {
             var predicate = new StringBuilder();
@@ -60,14 +78,15 @@ namespace MarketPlace.Application.Extensions
                 {
                     predicate.Append($" {requestFilters.LogicalOperator} ");
                 }
-                predicate.Append(requestFilters.Filters[i].Path + $".{nameof(string.Contains)}(@{i})");
-            }   
+                char operatorr = MappToOperator(pagedRequest.RequestFilters.Filters[i].Operator);
+                predicate.Append($"{requestFilters.Filters[i].Path} {operatorr} @{i}");
+            }
 
             if (requestFilters.Filters.Any())
             {
-                var propertyValues = requestFilters.Filters.Select(filter => filter.Value).ToArray();
-
+                var propertyValues = requestFilters.Filters.Select(filter => filter.Value).ToArray();            
                 query = query.Where(predicate.ToString(), propertyValues);
+              
             }
 
             return query;

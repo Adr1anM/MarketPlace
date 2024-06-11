@@ -10,6 +10,10 @@ interface ArtworkCardProps {
     description: string;
     price: number;
     createdDate: string;
+    userId: number;
+    firstName: string;
+    lastName: string;
+
   };
 }
 
@@ -28,8 +32,7 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
             R
           </Avatar>
         }
-        title={artwork.title}
-        subheader={new Date(artwork.createdDate).toLocaleDateString()}
+        title={artwork.title} 
       />
        <CardMedia
         component="img"
@@ -38,6 +41,9 @@ const ArtworkCard: React.FC<ArtworkCardProps> = ({ artwork }) => {
         alt="Paella dish"
       />
       <CardContent>
+        <Typography noWrap variant="body2" color="text.secondary">
+          {artwork.firstName + " " + artwork.lastName}
+        </Typography>
         <Typography noWrap variant="body2" color="text.secondary">
           {artwork.description}
         </Typography>

@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Common.Models;
 using MarketPlace.Application.Paints.Responses;
 using MediatR;
+using MarketPlace.Application;
 
 
 namespace MarketPlace.Application.Products.GetPagedResult
 {
-    public record GetPagedProductsQuerry(int PageNumber, int PageSize) : IRequest<IEnumerable<ProductDto>>;
-    public class GetPagedProductsHandler : IRequestHandler<GetPagedProductsQuerry, IEnumerable<ProductDto>>
+    public record GetPagedProductsQuerry(PagedRequest pagedRequest) : IRequest<PagedResult<ProductDto>>;
+    public class GetPagedProductsHandler : IRequestHandler<GetPagedProductsQuerry, PagedResult<ProductDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -16,11 +18,11 @@ namespace MarketPlace.Application.Products.GetPagedResult
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
-        public async Task<IEnumerable<ProductDto>> Handle(GetPagedProductsQuerry request, CancellationToken cancellationToken)
+        public async Task<PagedResult<ProductDto>> Handle(GetPagedProductsQuerry request, CancellationToken cancellationToken)
         {
-            var result = await _unitOfWork.Products.GetPagedResult(request.PageNumber, request.PageSize);
+            var result = await _unitOfWork.Products.GetPagedData<ProductDto>(request.pagedRequest, _mapper);
 
-            return _mapper.Map<IEnumerable<ProductDto>>(result);
+            return _mapper.Map<PagedResult<ProductDto>>(result);
         }
     }
 }

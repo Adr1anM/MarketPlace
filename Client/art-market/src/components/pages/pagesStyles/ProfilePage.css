@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:regular,bold,italic&subset=latin,latin-ext');
+
+.css-t7o3hl {
+    min-height: 25rem;
+    width: 100%;
+    opacity: 1;
+    color: rgb(52, 71, 103);
+    box-shadow: none;
+    display: grid;
+    background: linear-gradient(195deg, rgba(66, 66, 74, 0.8), rgba(25, 25, 25, 0.8)) center center / cover, url(/src/assets/images/citybackground.jpg) center center / cover no-repeat;
+    place-items: center;
+ 
+}
+
+.container {
+    align-content: center;
+    background-color: white;
+    color: white;
+    width: 100%;
+    height: 100%;
+  }
+
+
+.cardContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cardContainer .card{
+    margin-bottom: 32px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -64px;
+    border-radius: 0.75rem ;
+    height: 100%;
+    flex-direction: column;
+    width: 97%;
+    overflow: visible;
+}
+
+.cardHeader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -64px;
+}
+
+.cardHeader .avatarContainer {
+    width: 110px;
+    height: 110px;
+}
+
+.avatarPaper {
+    width: 100%;
+    height: 100%;
+}
+
+.avatarImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bio-paragraph {
+    margin: 0px;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1.25rem;
+    line-height: 1.625;
+    opacity: 1;
+    text-transform: none;
+    vertical-align: unset;
+    text-decoration: none;
+    color: rgb(123, 128, 154);
+    letter-spacing: -0.125px;
+    font-weight: 300;
+    padding-top: 20px;
+}
+
+.grid-overall-num{
+    margin: 0px;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    opacity: 1;
+    text-transform: none;
+    vertical-align: unset;
+    text-decoration: none;
+    color: rgb(52, 71, 103);
+    letter-spacing: -0.125px;
+    font-weight: 700 !important;
+}

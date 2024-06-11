@@ -61,6 +61,23 @@ namespace MarketPlace.Infrastructure.Repositories
                     .ToListAsync();
         }
 
+
+        public async Task<List<Product>> GetAllProductsWithAuthorsAndUsersAsync()
+        {
+            return await _context.Products
+                                 .Include(p => p.Author)
+                                    .ThenInclude(a => a.User)
+                                 .ToListAsync();
+        }
+
+        public async Task<List<Product>> GetAllProductsWithAuthorsAndUsersAsync(int id)
+        {
+            return await _context.Products.Where(product => product.AuthorId == id)
+                                        .Include(p => p.Author)
+                                            .ThenInclude(a => a.User)
+                                        .ToListAsync();
+        }
+
         public override Task<PagedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper) where TDto : class
         {
             return base.GetPagedData<TDto>(pagedRequest, mapper);

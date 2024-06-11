@@ -18,7 +18,8 @@ namespace MarketPlace.Application.App.Products.GetPagedResult
         }
         public async Task<IEnumerable<ProductDto>> Handle(GetAllProductsQuerry request, CancellationToken cancellationToken)
         {
-            var products = await _unitOfWork.Products.GetAllAsync();
+            var products = await _unitOfWork.Products.GetAllProductsWithAuthorsAndUsersAsync();
+
 
             return _mapper.Map<IEnumerable<ProductDto>>(products);
         }

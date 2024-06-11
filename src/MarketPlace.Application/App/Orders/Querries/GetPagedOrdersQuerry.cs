@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.App.Orders.Responses;
+using MarketPlace.Application.Common.Models;
 using MarketPlace.Application.Paints.Responses;
 using MarketPlace.Application.Products.GetPagedResult;
 using MediatR;
@@ -12,9 +13,9 @@ using System.Threading.Tasks;
 
 namespace MarketPlace.Application.App.Orders.Querries
 {
-    public record GetPagedOrdersQuerry(int PageNumber, int PageSize) : IRequest<IEnumerable<OrderDto>>;
+    public record GetPagedOrdersQuerry(PagedRequest pagedRequest) : IRequest<IEnumerable<OrderDto>>;
 
-    public class GetPagedOrdersQuerryHandler : IRequestHandler<GetPagedProductsQuerry, IEnumerable<ProductDto>>
+    public class GetPagedOrdersQuerryHandler : IRequestHandler<GetPagedOrdersQuerry, IEnumerable<OrderDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -23,11 +24,11 @@ namespace MarketPlace.Application.App.Orders.Querries
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
-        public async Task<IEnumerable<ProductDto>> Handle(GetPagedProductsQuerry request, CancellationToken cancellationToken)
+        public async Task<IEnumerable<OrderDto>> Handle(GetPagedOrdersQuerry request, CancellationToken cancellationToken)
         {
-            var result = await _unitOfWork.Products.GetPagedResult(request.PageNumber, request.PageSize);
+            var result = await _unitOfWork.Products.GetPagedData<OrderDto>(request.pagedRequest,_mapper);
 
-            return _mapper.Map<IEnumerable<ProductDto>>(result);
+            return _mapper.Map<IEnumerable<OrderDto>>(result);
         }
     }
 }

@@ -7,6 +7,11 @@ using MarketPlace.Application.Extensions;
 using MarketPlace.Application.Profiles;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using MarketPlace.WebUI.OptionsSetup;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using MarketPlace.Infrastructure.Options;
+using System.Text;
 
 namespace MarketPlace.WebUI.Extentions
 {
@@ -26,14 +31,51 @@ namespace MarketPlace.WebUI.Extentions
             });
 
             builder.Services.AddAutoMapper(typeof(ProductProfile).Assembly);
-
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer();
-            builder.Services.ConfigureOptions<JwtOptionsSetup>();
-            builder.Services.ConfigureOptions<JwtBearerOptionsSetup>();
-                
+            builder.Services.AddAuthentication(builder.Configuration);
+            builder.Services.AddControllers();
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
 
         }
+
+        public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            var authOptions = services.ConfigureAuthOptions(configuration);
+            services.AddJwtAuthentication(authOptions);
+            return services;
+        }
+        private static JwtOptions ConfigureAuthOptions(this IServiceCollection services, IConfiguration configuration)
+        {
+            var authOptionsConfigurationSection = configuration.GetSection("JwtOptions");
+            services.Configure<JwtOptions>(authOptionsConfigurationSection);
+            var authOptions = authOptionsConfigurationSection.Get<JwtOptions>();
+            return authOptions;
+        }
+
+        private static void AddJwtAuthentication(this IServiceCollection services, JwtOptions authOptions)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = authOptions.Issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = authOptions.Audience,
+
+                    ValidateLifetime = true,
+
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authOptions.SecretKey))
+                };
+            });
+        }
+
     }
 
 }

@@ -13,5 +13,7 @@ namespace MarketPlace.Application.Abstractions.Repositories
         Task<Product> GetProductByCategoryId(int categoryId);
         Product UpdateCreatedDate(int id , DateTime date);
         Task<List<Product>> GetPagedResult(int pageNum, int pagesize);
+        Task<List<Product>> GetAllProductsWithAuthorsAndUsersAsync();
+        Task<List<Product>> GetAllProductsWithAuthorsAndUsersAsync(int id);
     }
 }

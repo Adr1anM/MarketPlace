@@ -69,7 +69,7 @@ namespace MarketPlace.Infrastructure.Repositories
             return entity;
         }
 
-        private IQueryable<TEntity> IncludeProperties<TEntity>(params Expression<Func<TEntity, object>>[] includeProperties) where TEntity : Entity
+        private IQueryable<TEntity> IncludeProperties(params Expression<Func<TEntity, object>>[] includeProperties) 
         {
             IQueryable<TEntity> entities = _context.Set<TEntity>();
             foreach (var includeProperty in includeProperties)

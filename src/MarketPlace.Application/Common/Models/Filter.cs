@@ -6,6 +6,7 @@ namespace MarketPlace.Application.Common.Models
     {
         public string Path { get; set; }
         public string Value { get; set; }
+        public string Operator { get; set; }    
 
     }
 }

@@ -15,6 +15,7 @@ namespace MarketPlace.WebUI.OptionsSetup
         public void Configure(JwtOptions options)
         {
             _configuration.GetSection(SectionName).Bind(options);    
+
         }
     }
 }

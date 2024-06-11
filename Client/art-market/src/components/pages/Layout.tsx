@@ -7,10 +7,9 @@ export default function Layout(){
     return( 
     <div style={{display: "flex", flexDirection: "column", height: "100%", width: "100%" }}>
         <NavBar/>
-        <Toaster position="top-center" reverseOrder={false}/>
+        <Toaster  position="top-center" reverseOrder={false}/>
         <Outlet/>
         <Footer/>
-       
     </div>
     );
 }

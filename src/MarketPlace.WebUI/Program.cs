@@ -4,23 +4,8 @@ using MarketPlace.WebUI.Extentions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.AddServices();
 
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: MyAllowSpecificOrigins,
-                  policy =>
-                  {
-                    policy.WithOrigins("http://localhost:5173")
-                                       .AllowAnyMethod()
-                                       .AllowAnyHeader();
-                  });
-});
 
 var app = builder.Build();
 
@@ -37,7 +22,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseCustomExeptionHandling();
 app.UseTiming();
-app.UseCors(MyAllowSpecificOrigins);
+app.UseRouting();
+app.UseCors(configurePolicy => configurePolicy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

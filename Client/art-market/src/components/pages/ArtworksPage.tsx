@@ -29,14 +29,6 @@ const buttonStyle = {
     },
 };
 
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
 
 
 const ArtworksPage = () =>{
@@ -103,10 +95,8 @@ const ArtworksPage = () =>{
             <ContentContainer>
                 <Grid container rowSpacing={2} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
                     {dummyArtworks.map((artwork: Artwork) => (
-                        <Grid item xs={12} sm={6} md={4} lg={3} key={artwork.id}>
-                        <Item>
-                            <ArtworkCard artwork={artwork} />
-                        </Item>
+                        <Grid item xs={12} sm={6} md={4} lg={3} key={artwork.id}>                    
+                          <ArtworkCard artwork={artwork} />             
                         </Grid>
                     ))}     
                 </Grid>

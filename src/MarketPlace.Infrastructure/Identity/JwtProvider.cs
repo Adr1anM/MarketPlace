@@ -38,7 +38,7 @@ namespace MarketPlace.Infrastructure.Identity
                 issuer: _jwtOptions.Issuer,
                 audience: _jwtOptions.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(2),
+                expires: DateTime.UtcNow.AddDays(10),
                 signingCredentials: signingCredentials);
 
             string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);

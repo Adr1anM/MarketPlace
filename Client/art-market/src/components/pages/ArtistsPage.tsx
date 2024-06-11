@@ -1,6 +1,5 @@
-import { Box, Card, Container, CssBaseline, IconButton, IconButtonProps } from '@mui/material';
-import {Artwork , Author} from '../../types/types'
-import * as React from 'react';
+import {Container, CssBaseline} from '@mui/material';
+import {Author} from '../../types/types'
 import { styled } from '@mui/material/styles';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';

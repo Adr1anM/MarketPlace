@@ -1,5 +1,7 @@
 ﻿using MarketPlace.Application.App.Products.Commands;
 using MarketPlace.Application.App.Products.GetPagedResult;
+using MarketPlace.Application.App.Products.Querries;
+using MarketPlace.Application.Common.Models;
 using MarketPlace.Application.Products.Delete;
 using MarketPlace.Application.Products.GetPagedResult;
 using MarketPlace.Domain.Models;
@@ -43,6 +45,7 @@ namespace MarketPlace.WebUI.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetProduct(int id)
         {
             var productDto = await _mediator.Send(new GetProductByIdQuerry(id));
@@ -62,10 +65,17 @@ namespace MarketPlace.WebUI.Controllers
             return Ok(producs);
         }
 
-        [HttpPost("paged")]
-        public async Task<IActionResult> GetPagedProducts(GetPagedProductsQuerry command)
+        [HttpGet("all/{id}")]
+        public async Task<IActionResult> GetAllProductsByAuthId(int id)
         {
-            var result = await _mediator.Send(command);
+            var producs = await _mediator.Send(new GetAllProductsByIdQuerry(id));
+            return Ok(producs);
+        }
+
+        [HttpPost("paged")]
+        public async Task<IActionResult> GetPagedProducts(PagedRequest request)
+        {
+            var result = await _mediator.Send(new GetPagedProductsQuerry(request));
             return Ok(result);
         }
 
@@ -74,7 +84,7 @@ namespace MarketPlace.WebUI.Controllers
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product =  await _mediator.Send(new DeleteProduct(id));
-            return Ok("The Product was deleted successfuly");  
+            return Ok(product);  
         }
 
     }

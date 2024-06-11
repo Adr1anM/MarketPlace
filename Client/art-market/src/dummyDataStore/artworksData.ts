@@ -12,6 +12,10 @@ export const dummyArtworks: Artwork[] = [
     quantity: 5,
     price: 299.99,
     createdDate: '2023-05-01T08:30:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
+
   },
   {
     id: 2,
@@ -22,6 +26,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 3,
     price: 349.99,
     createdDate: '2023-06-15T09:00:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 3,
@@ -32,6 +39,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 10,
     price: 199.99,
     createdDate: '2023-07-20T10:15:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 4,
@@ -42,6 +52,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 7,
     price: 249.99,
     createdDate: '2023-08-05T11:30:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 5,
@@ -52,6 +65,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 6,
     price: 299.99,
     createdDate: '2023-09-10T12:45:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 6,
@@ -62,6 +78,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 4,
     price: 279.99,
     createdDate: '2023-10-25T14:00:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 7,
@@ -72,6 +91,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 8,
     price: 319.99,
     createdDate: '2023-11-15T15:30:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 8,
@@ -82,6 +104,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 9,
     price: 259.99,
     createdDate: '2023-12-01T16:45:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 9,
@@ -92,6 +117,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 2,
     price: 349.99,
     createdDate: '2024-01-10T17:00:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 10,
@@ -102,6 +130,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 12,
     price: 229.99,
     createdDate: '2024-02-14T18:15:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 11,
@@ -112,6 +143,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 3,
     price: 269.99,
     createdDate: '2024-03-03T19:30:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 12,
@@ -122,6 +156,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 5,
     price: 239.99,
     createdDate: '2024-04-20T20:45:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 13,
@@ -132,6 +169,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 4,
     price: 299.99,
     createdDate: '2024-05-10T21:00:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 14,
@@ -142,6 +182,9 @@ export const dummyArtworks: Artwork[] = [
     quantity: 6,
     price: 279.99,
     createdDate: '2024-06-01T22:15:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
   {
     id: 15,
@@ -152,5 +195,8 @@ export const dummyArtworks: Artwork[] = [
     quantity: 7,
     price: 319.99,
     createdDate: '2024-07-20T23:30:00Z',
+    userId: 1,
+    firstName: 'Alex',
+    lastName: 'Porrier'
   },
 ];
