@@ -33,12 +33,12 @@ const router = createBrowserRouter([{
       element: <ArtistsPage />,
     },
     {
-      path: '/profile',
+      path: '/profile/:id?',
       element: <ProfilePage />,
     },
     {
       path: '*',
-      element: <ErrorPage />,
+      element: <ErrorPage />, 
     },
   ],
 },])

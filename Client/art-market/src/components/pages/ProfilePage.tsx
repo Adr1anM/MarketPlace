@@ -1,234 +1,216 @@
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Collapse, Container, Fab, FormControl, Grid, IconButton, Modal, Paper, SxProps, TextField, Typography, Zoom } from "@mui/material";
-import './pagesStyles/ProfilePage.css';
-import { useState } from "react";
-import CloseIcon from '@mui/icons-material/Close';
-import { Artwork, Author, User } from "../../types/types";
-import ProfileCard from "./profile/ProfileCard";
-import { dummyArtworks } from "../../dummyDataStore/artworksData";
+import React, { useEffect, useState } from 'react';
+import {Box, Card, CardHeader,Fab,} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
+import './pagesStyles/ProfilePage.css';
+import { Author, CreateArtwork } from "../../types/types";
+import useArtworks from "../../zsm/stores/useArtworks";
+import { useAuth } from "../../contexts/AuthContext";
+import useAuthors from "../../zsm/stores/useAuthors";
+import { useParams } from "react-router-dom";
+import toast from 'react-hot-toast';
+import AvatarModal from './profile/EditPhotoModal';
+import ProfileDetails from './profile/ProfileDetails';
+import ArtworkList from './profile/ArtworkList';
+import ProfileAvatar from './profile/Avatar';
 import EditIcon from '@mui/icons-material/Edit';
-
-const user:User = {
-  id: 2,
-  firstName: "Alex",
-  lastName: "Rascu",
-  email: "alex@gmail.com"
-};
-
-const author: Author = {  
-  id: 1,
-  userId: 2,
-  biography: "Decisions: If you can't decide, the answer is no. If two equally difficult paths, choose the one more painful in the short term (pain avoidance is creating an illusion of equality). Choose the path that leaves you more equanimous.",
-  country: "Moldova",
-  birthDate: "6/8/2024",
-  socialMediaLinks : "https://linkedin.com/ https://www.facebook.com/",
-  numberOfPosts: 100
-};
-
-const sampleAuthor = {
-  ...author,
-  followers: 100,
-  follows: 200,
-}
-  
-
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 800,
-  height: 300,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
-const fabStyle = {
-  position: 'absolute',
-  bottom: 16,
-  right: 16,
-};  
+import CreateArtworkModal from './profile/CreateArtworkModal';
 
 const ProfilePage = () => {
 
-  const [bio, setBio] = useState(author.biography);
-  const [editMode, setEditMode] = useState(false);
-  const [editedBio, setEditedBio] = useState("");
+  const {isLoggedIn,user} = useAuth();
+  const { authorId } = useParams();
+  const artworksStore = useArtworks();
+  const authorStore = useAuthors();
+
+  const isAuthorProfile = user?.roles.includes("Author") && !authorId && isLoggedIn;
+
+
+  const [authorData, setAuthorData] = useState<Author | null>();
+  const [originalAuthorData, setOriginalAuthorData] = useState<Author | null>();
+  const [editImageModal, setEditImageModal] = useState(false);
+  const [editBio, setEditBio] = useState(false);
+  const [createArtworkModal, setCreateArtworkModal] = useState(false);
 
   
+  useEffect(() => {
+    const fetchAuthorData = async () => {
+      try {
+        if (isAuthorProfile) {
+          if (user?.id) {  
+  
+            const auth = await authorStore.fetchAuthorByUserId(user.id);
+            console.log("id", user.id);
+            console.log("Author", auth);
+            setAuthorData(auth);
+            setOriginalAuthorData(auth);
+          }
+        } else if (authorId) {
+          const parsedAuthorId = parseInt(authorId);
+          if (!isNaN(parsedAuthorId)) { 
+            const auth = await authorStore.fetchAuthorByUserId(parsedAuthorId);
+            setAuthorData(auth);
+            setOriginalAuthorData(auth);
+            console.log("Parsed id",parsedAuthorId);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching Author data:', error);
+      }
+    };
 
-  const handleEdit = () => {
-    setEditedBio(bio);
-    setEditMode(true);
+    fetchAuthorData();
+  }, [isAuthorProfile, user, authorId,isLoggedIn]);
+
+
+  useEffect(() => { 
+    const fetchArtworks = async () => {
+      if (authorData) {
+        await artworksStore.fetchArtworksByAuthorId(authorData?.id);
+      }
+    };
+
+    fetchArtworks();
+  }, [authorData,isLoggedIn]);
+
+
+  useEffect(() => {
+    const artwork = artworksStore.getArtworkById(8);
+    console.log("Artwork",artwork);
+  },[])
+
+  const handleOpenEditImageModal = () => {
+    setEditImageModal(true);
   };
 
-  const handleCloseEditModal = () => {
-    setEditMode(false);
+  const handleCloseEditImageModal = () => {
+    setEditImageModal(false);
   };
 
-  const handleSaveEdit = () => {
-    // Perform POST request to update bio with editedBio
-    // Upon successful update, update bio state
-    setBio(editedBio);
-    setEditMode(false);
+  const handleDeleteImage = () =>{
+    setAuthorData((prevAuthorData) => ({
+      ...prevAuthorData!,
+      profileImage: null, 
+    }));
   };
 
-  const fabs = [
-    {
-      color: 'primary' as 'primary',
-      sx: fabStyle as SxProps,
-      icon: <AddIcon />,
-      label: 'Add',
-    },
-    {
-      color: 'secondary' as 'secondary',
-      sx: fabStyle as SxProps,
-      icon: <EditIcon />,
-      label: 'Edit',
-    },
-  ];
+  
+  const handleUploadAvatar = (file: File) => {
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        const updatedAuthor = { 
+          ...authorData!, 
+          profileImage: base64String.replace(/^data:image\/[a-z]+;base64,/, "")
+        };
+        setAuthorData(updatedAuthor);
+      };
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+    }
+  };
+
+  const handleSave = async () => {
+
+    setEditBio(false);
+    try {
+      if (authorData && originalAuthorData && JSON.stringify(authorData) !== JSON.stringify(originalAuthorData)) {
+        await authorStore.updateAuthor(authorData);
+        console.log('Author data saved successfully');
+        toast.success('Author data saved successfully');
+        setOriginalAuthorData(authorData);
+        
+      } else {
+        console.log('No changes to save');
+        toast('No changes to save');
+      }
+    } catch (error) {
+      console.error('Error updating biography:', error);
+      toast.error('Failed to save author data');
+    }
+  };
+
+
+  const handleSaveArtwork = async (artwork: CreateArtwork) => {
+    try {
+     
+        await artworksStore.createArtwork(artwork);
+        console.log('Artwork created successfully');
+        toast.success('Artwork created successfully');
+        setOriginalAuthorData(authorData);
+    } catch (error) {
+      console.error('Error creating artwork:', error);
+      toast.error('Failed to create Artwork');
+    }
+  };
+  
+  const handleDelete = async (id:number) =>{
+    try {
+     
+      await artworksStore.deleteArtworkById(id);
+      console.log('Artwork deleted successfully');
+      toast.success('Artwork deleted successfully');
+      setOriginalAuthorData(authorData);
+  } catch (error) {
+    console.error('Error deleteing biography:', error);
+    toast.error('Failed to delete Artwork');
+  }
+  }
+
+  const handleBiographyChange = (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    setEditBio(true);
+    setAuthorData((prevAuthor) => ({
+      ...prevAuthor!,
+      biography: e.target.value,
+    }));
+  };
+
   return (
     <Box className="container">
       <Box className="css-t7o3hl">
-        {/* Content */}
       </Box>
-
       <Box className="cardContainer">
         <Card className="card" elevation={24}>
           <CardHeader
             className="cardHeader"
-            avatar={
-              <Avatar className="avatarContainer" aria-label="recipe">
-                <Paper className="avatarPaper" variant="outlined">
-                  <img
-                    className="avatarImage"
-                    src="https://hips.hearstapps.com/hmg-prod/images/william-shakespeare-194895-1-402.jpg"
-                    alt="Avatar"
-                  />
-                </Paper>
-              </Avatar>
-            }
+            avatar={<ProfileAvatar authorData={authorData}/>}
           />
-          <Box sx={{
-            width: '90%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            paddingTop: '80px'
+          {isAuthorProfile && (
+          <Fab
+            sx={{
+              '&:focus': { outline: 'none' },
+              top: '-30px',
+              left: '30px'
             }}
+            size="small"
+            color="secondary"
+            aria-label="edit"
+            onClick={handleOpenEditImageModal}
           >
-            <Box 
-              component= "div"
-              sx={{ 
-                width: '60%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column',
-              
-              }}
-            >
-              <Grid container  sx={{padding: '5px', width: '100%', height: '100%'}}>
-
-                <Grid item xs={6}  md={9}>
-                  <Typography className="grid-overall-num" align="left" variant="h4"  >
-                    {user.firstName + " " + user.lastName}
-                  </Typography>
-                </Grid>
-                <Grid item xs={6} md={3}>
-                 <Button style={{outline: 'none', borderRadius: 15}} variant="outlined">FOLLOW</Button>
-                </Grid>
-                  
-                <Grid container sx={{ paddingTop: '15px'}} rowSpacing={1} columnSpacing={1}>
-                  <Grid item xs={6}  md="auto" >
-                    <Typography className="grid-overall-num" component={'span'} align="center"  >
-                      {sampleAuthor.numberOfPosts + " "}
-                    </Typography>
-                    <Typography className="bio-paragraph" component={'span'} align="center"  >
-                      Posts
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}  md="auto">
-                    <Typography className="grid-overall-num" component={'span'} align="center"  >
-                      {sampleAuthor.followers + " "}  
-                    </Typography>
-                    <Typography className="bio-paragraph" component={'span'} align="center"  >
-                      Followers
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}  md="auto">
-                    <Typography className="grid-overall-num" component={'span'} align="center"  >
-                      {sampleAuthor.follows + " "} 
-                    </Typography>
-                    <Typography className="bio-paragraph" component={'span'} align="center"  >
-                    Following
-                    </Typography>
-                  </Grid>
-                </Grid>
-                <Typography variant="h6" className="bio-paragraph">
-                    {bio}
-                </Typography>
-              </Grid>
-            </Box> 
-          </Box>
-          
-          <Box sx={{
-            width: '75%',
-            paddingTop: '8rem'
-            }}
-          >
-            <Typography className="grid-overall-num" variant="h4">
-              Personal Products
-            </Typography>
-            <Grid sx={{paddingTop: '30px'}} container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-              {dummyArtworks.map((artwork: Artwork) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={artwork.id}>                    
-                      <ProfileCard artwork={artwork} />             
-                    </Grid>
-                ))}          
-            </Grid>
-          </Box> 
+            <EditIcon />
+          </Fab>
+        )}    
+          <ProfileDetails
+              authorData={authorData}
+              isAuthorProfile={isAuthorProfile}
+              user={user}
+              handleBiographyChange={handleBiographyChange}
+              editBio={editBio}
+              handleSave={handleSave}
+          />
+          <ArtworkList artworksStore={artworksStore}  handleDelete={handleDelete} user={user} />
+          <br />
         </Card>
       </Box>
-      <Modal
-        open={editMode}
-        onClose={handleCloseEditModal}
-        aria-labelledby="edit-bio-modal-title"
-        aria-describedby="edit-bio-modal-description"
-      >
-        <Box className="edit-modal">
-          <Box sx={style}>
-            <TextField
-                    id="modal-bio-textfield"
-                    multiline
-                    label = "Biography"
-                    value={editedBio}
-                    onChange={(e) => setEditedBio(e.target.value)}
-                    rows={10}
-                    sx={{ width: '100%'}}
-            />
-            <IconButton
-              aria-label="close"
-              onClick={handleCloseEditModal}
-              sx={{
-                  position: 'absolute',
-                  right: 8,
-                  top: 8,
-                  color: (theme) => theme.palette.grey[500],
-                  outline: 'none',
-              }}
-              >
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </Box>
-      </Modal>
-      <Fab color="secondary" aria-label="edit" sx={{ position: 'fixed', bottom: 30, right: 30 }}>
-        <EditIcon />
+      <Fab onClick={() => setCreateArtworkModal(true)} color="secondary" aria-label="edit" sx={{'&:focus': {outline: 'none'}, position: 'fixed', bottom: 30, right: 30 }}>
+        <AddIcon  />
       </Fab>
+
+    <AvatarModal author={authorData} open = {editImageModal} onClose={handleCloseEditImageModal} onDelete={handleDeleteImage} onSave={handleSave}  onUpload={handleUploadAvatar}/>
+    <CreateArtworkModal open={createArtworkModal} onClose={() => setCreateArtworkModal(false)} onCreate={handleSaveArtwork} authorID={authorData?.id!} />
     </Box>
+    
   );
 }
 

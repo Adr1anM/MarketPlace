@@ -22,7 +22,6 @@ export interface LogInModel{
   password: string;
 }
 
-
 const validationSchema = Yup.object({
   username: Yup.string().required('Username is required'),
   password: Yup.string().required('Password is required'),
@@ -54,7 +53,7 @@ const buttonStyle = {
 }
 
 const LogInModal: React.FC = () => {
-  const { login } = useAuth();
+  const { login , setUser } = useAuth();
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [forgetPasswordModal, setForgetPasswordModal] = useState(false);
@@ -85,10 +84,19 @@ const LogInModal: React.FC = () => {
 
   const handleLogin = async (values: LogInModel) => {
     toast.promise(
-      axios.post('/Account/login', values).then(response => {
+      axios.post('/Account/login', values)
+      .then(async response => {
         const token = response.data;
         login(token);
         handleClose();
+        try {
+          const userResponse = await axios.get('/Account/user'); 
+          const user = userResponse.data;
+          setUser(user);
+          localStorage.setItem('user', JSON.stringify(user)); 
+      } catch (error) {
+          console.error('Failed to fetch user details', error);
+      }
       }),
       {
         loading: 'Logging in...',

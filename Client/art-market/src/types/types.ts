@@ -7,20 +7,35 @@ export interface Author{
     birthDate: string;
     socialMediaLinks : string;
     numberOfPosts: number;
+    profileImage: File | string | null; 
 }
 
 export interface Artwork{
     id: number;
     title: string;
     description: string;
-    categoryId: number;
+    categoryID: number;
     authorId: number;
     quantity: number;
     price: number;
     createdDate: string;
-    userId: number,
-    firstName: string,
-    lastName: string
+    userId: number;
+    firstName: string;
+    lastName: string;
+    imageData: File | string | null;
+    subCategoryIds : number[];
+}
+
+export interface CreateArtwork{
+    title: string;
+    description: string;
+    categoryID: number;
+    authorId: number;
+    quantity: number;
+    price: number;
+    createdDate: string;
+    imageData: File | string | null;
+    subCategoryIds : number[];
 }
 
 export interface Order{
@@ -61,4 +76,24 @@ export interface User{
     firstName: string;
     lastName: string;
     email: string;
+    roles: string [];
+}
+
+export interface PagedRequest {
+    pageIndex: number;
+    pageSize: number;
+    columnNameForSorting: string;
+    sortDirection: 'asc' | 'desc';
+    requestFilters: RequestFilters;
+}
+
+export interface RequestFilters{
+    logicalOperator: number;
+    filters: Filter[];
+}
+
+export interface Filter {
+    path: string;
+    value: string;
+    operator: string;
 }
