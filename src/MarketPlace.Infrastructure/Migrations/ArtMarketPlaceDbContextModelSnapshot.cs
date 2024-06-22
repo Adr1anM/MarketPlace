@@ -22,6 +22,29 @@ namespace MarketPlace.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MarketPlace.Domain.CategorySubcategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("SubCategoryId");
+
+                    b.ToTable("CategorySubcategories");
+                });
+
             modelBuilder.Entity("MarketPlace.Domain.Models.Auth.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -259,6 +282,9 @@ namespace MarketPlace.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<byte[]>("ProfileImage")
+                        .HasColumnType("varbinary(max)");
+
                     b.Property<string>("SocialMediaLinks")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -269,8 +295,7 @@ namespace MarketPlace.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Authors");
                 });
@@ -314,29 +339,6 @@ namespace MarketPlace.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("AuthorCategories");
-                });
-
-            modelBuilder.Entity("MarketPlace.Domain.Models.CategoriesSubcategories", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubCategoryId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("SubCategoryId");
-
-                    b.ToTable("CategSubCateg", (string)null);
                 });
 
             modelBuilder.Entity("MarketPlace.Domain.Models.Category", b =>
@@ -440,7 +442,6 @@ namespace MarketPlace.Infrastructure.Migrations
                         .HasColumnType("nvarchar(300)");
 
                     b.Property<byte[]>("ImageData")
-                        .IsRequired()
                         .HasColumnType("varbinary(max)");
 
                     b.Property<decimal>("Price")
@@ -486,6 +487,29 @@ namespace MarketPlace.Infrastructure.Migrations
                     b.ToTable("ProductOrder", (string)null);
                 });
 
+            modelBuilder.Entity("MarketPlace.Domain.Models.ProductSubCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubCategoryId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SubCategoryId");
+
+                    b.ToTable("ProductSubCategories");
+                });
+
             modelBuilder.Entity("MarketPlace.Domain.Models.Promocode", b =>
                 {
                     b.Property<int>("Id")
@@ -510,6 +534,59 @@ namespace MarketPlace.Infrastructure.Migrations
                     b.ToTable("Promocodes");
                 });
 
+            modelBuilder.Entity("MarketPlace.Domain.Models.ShoppingCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ShoppingCarts");
+                });
+
+            modelBuilder.Entity("MarketPlace.Domain.Models.ShoppingCartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(9, 2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ShoppingCartId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ShoppingCartId");
+
+                    b.ToTable("ShoppingCartItems");
+                });
+
             modelBuilder.Entity("MarketPlace.Domain.Models.SubCategory", b =>
                 {
                     b.Property<int>("Id")
@@ -526,6 +603,25 @@ namespace MarketPlace.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("SubCategories");
+                });
+
+            modelBuilder.Entity("MarketPlace.Domain.CategorySubcategory", b =>
+                {
+                    b.HasOne("MarketPlace.Domain.Models.Category", "Category")
+                        .WithMany("CategorySubcategories")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MarketPlace.Domain.Models.SubCategory", "SubCategory")
+                        .WithMany("CategorySubcategories")
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("MarketPlace.Domain.Models.Auth.RoleClaim", b =>
@@ -582,8 +678,8 @@ namespace MarketPlace.Infrastructure.Migrations
             modelBuilder.Entity("MarketPlace.Domain.Models.Author", b =>
                 {
                     b.HasOne("MarketPlace.Domain.Models.Auth.User", "User")
-                        .WithOne("Author")
-                        .HasForeignKey("MarketPlace.Domain.Models.Author", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -605,25 +701,6 @@ namespace MarketPlace.Infrastructure.Migrations
                     b.Navigation("Author");
 
                     b.Navigation("AuthorCategory");
-                });
-
-            modelBuilder.Entity("MarketPlace.Domain.Models.CategoriesSubcategories", b =>
-                {
-                    b.HasOne("MarketPlace.Domain.Models.Category", "Category")
-                        .WithMany("CategoriesSubcategories")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MarketPlace.Domain.Models.SubCategory", "SubCategory")
-                        .WithMany("CategoriesSubcategories")
-                        .HasForeignKey("SubCategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("MarketPlace.Domain.Models.Order", b =>
@@ -691,10 +768,53 @@ namespace MarketPlace.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("MarketPlace.Domain.Models.Auth.User", b =>
+            modelBuilder.Entity("MarketPlace.Domain.Models.ProductSubCategory", b =>
                 {
-                    b.Navigation("Author")
+                    b.HasOne("MarketPlace.Domain.Models.Product", "Product")
+                        .WithMany("ProductSubcategories")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("MarketPlace.Domain.Models.SubCategory", "SubCategory")
+                        .WithMany("ProductSubcategories")
+                        .HasForeignKey("SubCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("SubCategory");
+                });
+
+            modelBuilder.Entity("MarketPlace.Domain.Models.ShoppingCart", b =>
+                {
+                    b.HasOne("MarketPlace.Domain.Models.Auth.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MarketPlace.Domain.Models.ShoppingCartItem", b =>
+                {
+                    b.HasOne("MarketPlace.Domain.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MarketPlace.Domain.Models.ShoppingCart", "ShoppingCart")
+                        .WithMany("ShoppingCartItems")
+                        .HasForeignKey("ShoppingCartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("ShoppingCart");
                 });
 
             modelBuilder.Entity("MarketPlace.Domain.Models.Author", b =>
@@ -711,7 +831,7 @@ namespace MarketPlace.Infrastructure.Migrations
 
             modelBuilder.Entity("MarketPlace.Domain.Models.Category", b =>
                 {
-                    b.Navigation("CategoriesSubcategories");
+                    b.Navigation("CategorySubcategories");
                 });
 
             modelBuilder.Entity("MarketPlace.Domain.Models.Order", b =>
@@ -722,6 +842,8 @@ namespace MarketPlace.Infrastructure.Migrations
             modelBuilder.Entity("MarketPlace.Domain.Models.Product", b =>
                 {
                     b.Navigation("ProductOrders");
+
+                    b.Navigation("ProductSubcategories");
                 });
 
             modelBuilder.Entity("MarketPlace.Domain.Models.Promocode", b =>
@@ -730,9 +852,16 @@ namespace MarketPlace.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MarketPlace.Domain.Models.ShoppingCart", b =>
+                {
+                    b.Navigation("ShoppingCartItems");
+                });
+
             modelBuilder.Entity("MarketPlace.Domain.Models.SubCategory", b =>
                 {
-                    b.Navigation("CategoriesSubcategories");
+                    b.Navigation("CategorySubcategories");
+
+                    b.Navigation("ProductSubcategories");
                 });
 #pragma warning restore 612, 618
         }

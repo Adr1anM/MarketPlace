@@ -6,12 +6,11 @@ using MarketPlace.Infrastructure;
 using MarketPlace.Application.Extensions;
 using MarketPlace.Application.Profiles;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using MarketPlace.WebUI.OptionsSetup;
-using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using MarketPlace.Infrastructure.Options;
 using System.Text;
+using MarketPlace.Infrastructure.Persistance.Repositories;
+using MarketPlace.Domain.Models;
 
 namespace MarketPlace.WebUI.Extentions
 {
@@ -24,6 +23,8 @@ namespace MarketPlace.WebUI.Extentions
             builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+            builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddLogging(builder =>
             {
@@ -35,7 +36,7 @@ namespace MarketPlace.WebUI.Extentions
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+          //  builder.Services.AddHttpContextAccessor();
         }
 
         public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration configuration)

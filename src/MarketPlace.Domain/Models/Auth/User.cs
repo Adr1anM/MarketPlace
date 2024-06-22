@@ -7,6 +7,5 @@ namespace MarketPlace.Domain.Models.Auth
     {
         public string FirstName { get; set; }   
         public string LastName { get; set; }
-        public Author Author { get; set; }
     }
 }

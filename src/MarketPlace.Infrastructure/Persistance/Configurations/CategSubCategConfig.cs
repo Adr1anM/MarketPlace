@@ -1,25 +1,23 @@
-﻿using MarketPlace.Domain.Models;
+﻿using MarketPlace.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
 namespace MarketPlace.Infrastructure.Persistance.Configurations
 {
-    public class CategSubCategConfig : IEntityTypeConfiguration<CategoriesSubcategories>
+    internal class CategSubCategConfig : IEntityTypeConfiguration<CategorySubcategory>
     {
-        public void Configure(EntityTypeBuilder<CategoriesSubcategories> builder)
+        public void Configure(EntityTypeBuilder<CategorySubcategory> builder)
         {
-            builder.ToTable("CategSubCateg");
 
-            builder.HasOne(c => c.Category)
-                   .WithMany(cs => cs.CategoriesSubcategories)
-                   .HasForeignKey(c => c.CategoryId);
-                 
+            builder.HasOne(psc => psc.Category)
+                   .WithMany(p => p.CategorySubcategories)
+                   .HasForeignKey(psc => psc.CategoryId);
 
-            builder.HasOne(c => c.SubCategory)
-                   .WithMany(cs => cs.CategoriesSubcategories)
-                   .HasForeignKey(c => c.SubCategoryId);
-                  
+            builder.HasOne(psc => psc.SubCategory)
+                   .WithMany(sc => sc.CategorySubcategories)
+                   .HasForeignKey(psc => psc.SubCategoryId);
+
         }
     }
 }

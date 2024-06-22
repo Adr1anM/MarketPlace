@@ -20,9 +20,8 @@ namespace MarketPlace.Application.Products.GetPagedResult
         }
         public async Task<PagedResult<ProductDto>> Handle(GetPagedProductsQuerry request, CancellationToken cancellationToken)
         {
-            var result = await _unitOfWork.Products.GetPagedData<ProductDto>(request.pagedRequest, _mapper);
+            return  await _unitOfWork.Products.GetPagedData<ProductDto>(request.pagedRequest, _mapper);
 
-            return _mapper.Map<PagedResult<ProductDto>>(result);
         }
     }
 }

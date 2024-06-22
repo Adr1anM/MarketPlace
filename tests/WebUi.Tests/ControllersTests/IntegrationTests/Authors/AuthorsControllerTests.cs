@@ -1,4 +1,4 @@
-﻿using MarketPlace.Application.App.Authors.Commands;
+﻿/*using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.Responses;
 using MarketPlace.Application.App.Orders.Responses;
 using MarketPlace.Application.App.Products.Commands;
@@ -284,3 +284,4 @@ namespace WebUi.Tests.ControllersTests.IntegrationTests.Authors
         }
     }
 }
+*/

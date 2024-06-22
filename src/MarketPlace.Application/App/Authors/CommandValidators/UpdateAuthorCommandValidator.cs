@@ -25,9 +25,6 @@ namespace MarketPlace.Application.App.Authors.CommandValidators
                 .MaximumLength(200)
                 .NotEmpty();
 
-            RuleFor(a => a.NumberOfPosts)
-                .NotEmpty();
-
             RuleFor(a => a.Country)
                 .MaximumLength(150)
                 .NotEmpty();

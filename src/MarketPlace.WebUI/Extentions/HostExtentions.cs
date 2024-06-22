@@ -1,5 +1,7 @@
-﻿using MarketPlace.Infrastructure.DataSeed;
+﻿using MarketPlace.Domain.Models.Auth;
+using MarketPlace.Infrastructure.DataSeed;
 using MarketPlace.Infrastructure.Persistance.Context;
+using Microsoft.AspNetCore.Identity;
 
 namespace MarketPlace.WebUI.Extentions
 {
@@ -14,8 +16,9 @@ namespace MarketPlace.WebUI.Extentions
                 try 
                 {
                     var context = services.GetRequiredService<ArtMarketPlaceDbContext>();
+                    var roleManager = services.GetRequiredService<RoleManager<Role>>();
 
-                    await SeedFacade.SeedData(context);
+                    await SeedFacade.SeedData(context, roleManager);
 
                 }
                 catch (Exception ex) 

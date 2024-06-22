@@ -20,6 +20,7 @@ namespace MarketPlace.Domain.Models
         public string SocialMediaLinks { get; set; }
         public int NumberOfPosts { get; set; }
         public string PhoneNumber { get; set; } 
+        public byte[]? ProfileImage { get; set; }
         public List<Product> Products { get; } = [];
         public List<AuthorAuthorCategory> AuthorAuthorCategories { get; } = [];
 

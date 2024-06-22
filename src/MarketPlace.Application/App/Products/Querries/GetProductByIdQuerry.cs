@@ -18,7 +18,8 @@ namespace MarketPlace.Application.App.Products.GetPagedResult
         }
         public async Task<ProductDto> Handle(GetProductByIdQuerry request, CancellationToken cancellationToken)
         {
-            var orderResult = await _unitOfWork.Products.GetByIdWithIncludeAsync(request.Id, product => product.Author, product => product.Category);
+            var orderResult = await _unitOfWork.Products.GetByIdWithIncludeAsync(request.Id, 
+                product => product.Author, p => p.Author.User, p => p.ProductSubcategories);
             return _mapper.Map<ProductDto>(orderResult);
         }
     }

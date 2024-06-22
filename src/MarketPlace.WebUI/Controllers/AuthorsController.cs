@@ -1,10 +1,9 @@
 ﻿using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.Querries;
+using MarketPlace.Application.App.Categories.Querries;
 using MarketPlace.WebUI.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -22,8 +21,7 @@ namespace MarketPlace.WebUI.Controllers
 
         [HttpPost]
         [ValidateModel]
-        [Authorize]
-        public async Task<IActionResult> CreateAuthor(CreateAuthor command)
+        public async Task<IActionResult> CreateAuthor([FromForm] CreateAuthor command)
         {
             var result = await _mediator.Send(command);
             return Ok(result);
@@ -31,8 +29,8 @@ namespace MarketPlace.WebUI.Controllers
 
         [HttpPut]
         [ValidateModel]
-        [Authorize]
-        public async Task<IActionResult> UpdateAuthor(UpdateAuthor command)
+        [Authorize(Roles = "Author")]
+        public async Task<IActionResult> UpdateAuthor([FromForm] UpdateAuthor command)
         {
             var result = await _mediator.Send(command);
             if (result == null)
@@ -42,7 +40,7 @@ namespace MarketPlace.WebUI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("all")]
+        [HttpGet]
         public async Task<IActionResult> GetAllAuthors()
         {
             var authors = await _mediator.Send(new GetAllAuthorsQuerry());
@@ -53,7 +51,7 @@ namespace MarketPlace.WebUI.Controllers
             return Ok(authors);
         }
 
-        [HttpGet("country")]
+        [HttpGet("authorsBycountry")]
         [ValidateModel]
         public async Task<IActionResult> GetAuthorsByCountry(string country)
         {
@@ -69,11 +67,6 @@ namespace MarketPlace.WebUI.Controllers
         public async Task<IActionResult> DeleteAuthor(int id)
         {
             var author = await _mediator.Send(new DeleteAuthor(id));
-
-            if(author == null)
-            {
-                return NotFound($"No such author with Id:{id}");
-            }   
             return Ok(author);  
         }
 
@@ -81,12 +74,36 @@ namespace MarketPlace.WebUI.Controllers
         public async Task<IActionResult> GetAuthorById(int id)
         {
             var author = await _mediator.Send(new GetAuthorByIdQuerry(id));
-            if(author == null)
+            return Ok(author);  
+        }
+
+        [HttpGet("countries")]
+        public async Task<IActionResult> GetAllCountries()
+        {
+            var countries = await _mediator.Send(new GetAllCountriesQuery());
+            return Ok(countries);
+        }
+
+        [HttpGet("names")]
+        public async Task<IActionResult> GetAllAuthorNames()
+        {
+            var countries = await _mediator.Send(new GetAllAuthorsNameQuery());
+            return Ok(countries);
+        }
+
+
+        [HttpGet("by-user/{id}")]
+        public async Task<IActionResult> GetAuthorByUserId(int id)
+        {
+            var author = await _mediator.Send(new GeAuthorByUserIdQuerry(id));
+            if (author == null)
             {
                 return NotFound($"No authr with such Id:{id}");
             }
 
-            return Ok(author);  
+            return Ok(author);
         }
+
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using MarketPlace.Application.Abstractions.Behaviors;
+using MarketPlace.Application.Abstractions.Services;
 using MarketPlace.Application.App.Authors.Commands;
 using MarketPlace.Application.App.Authors.CommandValidators;
 using MarketPlace.Application.App.Orders.CommandValidators;
@@ -8,6 +9,7 @@ using MarketPlace.Application.App.Products.CommandValidator;
 using MarketPlace.Application.Orders.Create;
 using MarketPlace.Application.Orders.Update;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 

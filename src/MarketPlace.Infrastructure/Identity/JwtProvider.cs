@@ -21,13 +21,16 @@ namespace MarketPlace.Infrastructure.Identity
             _jwtOptions = jwtOptions.Value;
         }
 
-        public string GenerateJwtToken(int id, string email)
+        public string GenerateJwtToken(int id, string email, IList<string> roles)
         {
             var claims = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Sub, id.ToString()),
+                new Claim(ClaimTypes.Sid, id.ToString()),
                 new(JwtRegisteredClaimNames.Email, email)
             };
+
+            // Add roles as claims
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
             var signingCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(
@@ -43,7 +46,7 @@ namespace MarketPlace.Infrastructure.Identity
 
             string tokenValue = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return tokenValue;  
+            return tokenValue;
         }
     }
 }

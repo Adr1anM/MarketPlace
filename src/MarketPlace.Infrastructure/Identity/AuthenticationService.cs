@@ -25,6 +25,11 @@ namespace MarketPlace.Infrastructure.Identity
 
         public async Task<string> RegisterAsync(RegisterModel model)
         {
+            var userExists = await _userManager.FindByEmailAsync(model.Email);
+            if(userExists != null)
+            {
+                _logger.LogInformation($"User with Email {model.Email} already exists");
+            }
             var user = new User
             {
                 FirstName = model.FirstName,
@@ -36,12 +41,31 @@ namespace MarketPlace.Infrastructure.Identity
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
+            
+                var defaultRole = model.Role;
+                var roleExists = await _roleManager.RoleExistsAsync(defaultRole);
+                if (!roleExists)
+                {
+                    _logger.LogError($"Role {defaultRole} does not exist.");
+                    return $"Role {defaultRole} does not exist.";
+                }
+
+           
+                var roleResult = await _userManager.AddToRoleAsync(user, defaultRole);
+                if (!roleResult.Succeeded)
+                {
+                    _logger.LogError($"Unable to assign role to the user with Email {user.Email}");
+                    return string.Join(", ", roleResult.Errors);
+                }
+
                 _logger.LogInformation($"User with Email {user.Email} registered successfully");
-                return _jwtProvider.GenerateJwtToken(user.Id, user.Email);
+
+                var roles = await _userManager.GetRolesAsync(user);
+                return _jwtProvider.GenerateJwtToken(user.Id, user.Email, roles);
             }
             else
             {
-                _logger.LogError($"Unable to regiter the user with Email {user.Email}");
+                _logger.LogError($"Unable to register the user with Email {user.Email}");
                 return string.Join(", ", result.Errors);
             }
         }
@@ -57,7 +81,8 @@ namespace MarketPlace.Infrastructure.Identity
             var isPasswordCorrect = await _userManager.CheckPasswordAsync(user, password);
             if (isPasswordCorrect)
             {
-                return _jwtProvider.GenerateJwtToken(user.Id, user.Email);
+                var roles = await _userManager.GetRolesAsync(user);
+                return _jwtProvider.GenerateJwtToken(user.Id, user.Email, roles);
             }
             else
             {

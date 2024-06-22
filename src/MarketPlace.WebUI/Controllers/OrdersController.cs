@@ -5,9 +5,8 @@ using MarketPlace.Application.Orders.Update;
 using MarketPlace.WebUI.Filters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+
 
 namespace MarketPlace.WebUI.Controllers
 {
@@ -21,6 +20,7 @@ namespace MarketPlace.WebUI.Controllers
             _mediator = mediator;           
         }
 
+
         [HttpPost]
         [ValidateModel]
         [Authorize]
@@ -29,6 +29,7 @@ namespace MarketPlace.WebUI.Controllers
             var orderResult = await _mediator.Send(command);
             return Ok(orderResult);
         }
+
 
         [HttpPut]
         [ValidateModel]
@@ -53,15 +54,14 @@ namespace MarketPlace.WebUI.Controllers
             var orderResult = await _mediator.Send(new GetOrderByIdQuerry(id));         
             return Ok(orderResult);
         }
-            
-        [HttpGet("all")]
+        
+        
+        [HttpGet]
         public async Task<IActionResult> GetAllOrders()
         {
             var orders = await _mediator.Send(new GetAllOrderQuerry());         
             return Ok(orders);
         }
-
-
 
     }
 }

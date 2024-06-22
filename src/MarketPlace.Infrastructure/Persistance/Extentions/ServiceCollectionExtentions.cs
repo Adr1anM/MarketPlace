@@ -1,5 +1,7 @@
-﻿using MarketPlace.Domain.Models.Auth;
+﻿using MarketPlace.Application.Abstractions.Services;
+using MarketPlace.Domain.Models.Auth;
 using MarketPlace.Infrastructure.Persistance.Context;
+using MarketPlace.Infrastructure.Persistance.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,7 +20,7 @@ namespace MarketPlace.Infrastructure.Persistance.Extentions
             });
 
             services.AddIdenttyJwtAuthentication();
-
+            services.AddScoped<IFileManager, FileManager>();
 
             return services;
         }

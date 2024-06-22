@@ -3,15 +3,9 @@ using MarketPlace.Application.Abstractions;
 using MarketPlace.Application.Abstractions.Behaviors.Messaging;
 using MarketPlace.Application.App.Orders.Responses;
 using MarketPlace.Application.Exceptions;
-using MarketPlace.Application.Orders.Create;
 using MarketPlace.Domain.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MarketPlace.Application.Orders.Update
 {

@@ -18,10 +18,7 @@ namespace MarketPlace.Application.App.Authors.CommandValidators
 
             RuleFor(a => a.SocialMediaLinks)
                 .MaximumLength(200)
-                .NotEmpty();
-
-            RuleFor(a => a.NumberOfPosts)
-                .NotEmpty();
+                .NotEmpty();    
 
             RuleFor(a => a.Country)
                 .MaximumLength(150)

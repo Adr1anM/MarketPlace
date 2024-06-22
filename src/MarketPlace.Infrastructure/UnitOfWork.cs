@@ -11,13 +11,15 @@ namespace MarketPlace.Infrastructure
         private readonly ArtMarketPlaceDbContext _context;
         private readonly Dictionary<Type, object> _repositories;
         public UnitOfWork(ArtMarketPlaceDbContext context, IAuthorRepository authorRepository, 
-            IOrderRepository orderRepository, IProductRepository productRepository)
+            IOrderRepository orderRepository, IProductRepository productRepository, ICategoryRepository categories, IShoppingCartRepository shoppingCarts)
         {
             _repositories = new Dictionary<Type, object>();
             _context = context;
             Authors = authorRepository;
             Orders = orderRepository;
             Products = productRepository;
+            Categories = categories;
+            ShoppingCarts = shoppingCarts;
         }
 
         public IAuthorRepository Authors { get; private set; }
@@ -25,6 +27,9 @@ namespace MarketPlace.Infrastructure
         public IOrderRepository Orders { get; private set; }
 
         public IProductRepository Products { get; private set; }
+        public ICategoryRepository Categories { get; private set; }
+        public IShoppingCartRepository ShoppingCarts { get; private set; }
+
 
         public async Task BeginTransactionAsync(CancellationToken cancellationToken)
         {

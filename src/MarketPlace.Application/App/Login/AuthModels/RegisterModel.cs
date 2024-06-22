@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MarketPlace.Domain.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,5 +14,6 @@ namespace MarketPlace.Application.App.Login.AuthModels
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
+        public string Role { get; set; }    
     }
 }

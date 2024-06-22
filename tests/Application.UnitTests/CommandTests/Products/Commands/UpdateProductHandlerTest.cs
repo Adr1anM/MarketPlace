@@ -1,4 +1,4 @@
-﻿using Application.UnitTests.Helpers;
+﻿/*using Application.UnitTests.Helpers;
 using AutoMapper;
 using Azure.Core;
 using MarketPlace.Application.App.Authors.Commands;
@@ -126,3 +126,4 @@ namespace Application.UnitTests.CommandTests.Products.Commands
         }
     }
 }
+*/

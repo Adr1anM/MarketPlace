@@ -13,6 +13,9 @@ namespace MarketPlace.Application.Abstractions
         public IAuthorRepository Authors { get; }
         public IOrderRepository Orders { get; } 
         public IProductRepository Products { get; }
+        public ICategoryRepository Categories { get; }
+        public IShoppingCartRepository ShoppingCarts { get; }
+
 
         IGenericRepository<TEntity> GetGenericRepository<TEntity>() where TEntity : Entity;
         Task SaveAsync(CancellationToken cancellationToken);

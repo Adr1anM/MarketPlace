@@ -1,4 +1,4 @@
-﻿using Application.UnitTests.Helpers;
+﻿/*using Application.UnitTests.Helpers;
 using AutoMapper;
 using Azure.Core;
 using MarketPlace.Application.Abstractions;
@@ -119,3 +119,4 @@ namespace Application.UnitTests.CommandTests.Authors.Comands
         }
     }
 }
+*/

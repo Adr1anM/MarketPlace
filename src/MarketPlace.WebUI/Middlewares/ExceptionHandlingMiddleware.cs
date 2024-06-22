@@ -61,6 +61,12 @@ namespace MarketPlace.WebUI.Middlewares
                     "Validation Error",
                     "One or more validation errors has occurred",
                     validationException.Errors),
+                DuplicateUserNameException duplicateException => new ExceptionDetails(
+                    StatusCodes.Status409Conflict,
+                    "UserNameDuplicate",
+                    "UserName Error",
+                    duplicateException.Message,
+                    null),
                 _ => new ExceptionDetails(
                 StatusCodes.Status500InternalServerError,
                 "ServerError",

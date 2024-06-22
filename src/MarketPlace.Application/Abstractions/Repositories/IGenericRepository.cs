@@ -19,5 +19,11 @@ namespace MarketPlace.Application.Abstractions.Repositories
         Task<TEntity> UpdateAsync(TEntity entity);
         Task<TEntity> DeleteAsync(int id);
         Task<PagedResult<TDto>> GetPagedData<TDto>(PagedRequest pagedRequest, IMapper mapper) where TDto : class;
+        Task<List<TEntity>> FindByWhere(Expression<Func<TEntity, bool>> expresionPredicate);
+        Task<List<TEntity>> GetAllByIdWithIncludeAsync(int id, params Expression<Func<TEntity, object>>[] includeProperties);
+        Task<List<TResult>> GetWithConditionAndSelect<TResult>(
+            Expression<Func<TEntity, bool>> predicate,
+            Expression<Func<TEntity, TResult>> selector) where TResult : class;
     }
 }
+    

@@ -16,6 +16,7 @@ namespace MarketPlace.Application.Paints.Responses
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string ImageData { get; set; }
+        public IList<int> SubCategoryIds { get; set; } 
 
     }
 

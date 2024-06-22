@@ -7,6 +7,6 @@ namespace MarketPlace.Domain.Models
     {
         [MaxLength(100)]
         public string Name { get; set; }
-        public List<CategoriesSubcategories> CategoriesSubcategories { get; } = [];
+        public List<CategorySubcategory> CategorySubcategories { get; set; } = [];
     }
 }

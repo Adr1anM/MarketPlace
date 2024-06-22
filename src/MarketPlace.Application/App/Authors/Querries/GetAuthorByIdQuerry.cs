@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
+using Castle.Core.Logging;
 using MarketPlace.Application.Abstractions;
+using MarketPlace.Application.Abstractions.Services;
 using MarketPlace.Application.App.Authors.Responses;
+using MarketPlace.Application.Exceptions;
+using MarketPlace.Domain.Models;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+
+
 
 namespace MarketPlace.Application.App.Authors.Querries
 {   
@@ -15,16 +17,30 @@ namespace MarketPlace.Application.App.Authors.Querries
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        public GetAuthorByIdQuerryHandler(IMapper mapper, IUnitOfWork unitOfWork)
+        private readonly ILogger<GetAuthorByIdQuerryHandler> _logger;
+        private readonly IFileManager _fileManager;
+
+        public GetAuthorByIdQuerryHandler(IMapper mapper, IUnitOfWork unitOfWork, IFileManager fileManager, ILogger<GetAuthorByIdQuerryHandler> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _fileManager = fileManager;
+            _logger = logger;
         }
+
         public async Task<AuthorDto> Handle(GetAuthorByIdQuerry request, CancellationToken cancellationToken)
         {
-            var result = await _unitOfWork.Authors.GetByIdAsync(request.Id);
+            var result = await _unitOfWork.Authors.GetByIdWithIncludeAsync(request.Id, user => user.User);
+            if(result == null )
+            {
+                _logger.LogError($"Entity of type {typeof(Author)} with id {request.Id} not found");
+                throw new EntityNotFoundException(typeof(Author), request.Id);
+            }
 
-            return _mapper.Map<AuthorDto>(result);
+            var normalizedResult = _mapper.Map<AuthorDto>(result);
+
+        
+            return normalizedResult;
         }
     }
 }

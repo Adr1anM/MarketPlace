@@ -37,7 +37,7 @@ namespace MarketPlace.Application.App.Products.CommandValidator
                .MaximumLength(250)
                .NotEmpty();
 
-            RuleFor(o => o.CategoryID)
+            RuleFor(o => o.CategoryId)
                .GreaterThan(0)
                .NotEmpty();
         }

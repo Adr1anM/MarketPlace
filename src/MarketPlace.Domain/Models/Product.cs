@@ -19,9 +19,10 @@ namespace MarketPlace.Domain.Models
 
         [Column(TypeName = "decimal(9, 2)")]
         public decimal Price { get; set; }
-        public byte[] ImageData { get; set; }   
+        public byte[]? ImageData { get; set; }   
         public DateTime CreatedDate { get; set; }
         public List<ProductOrder> ProductOrders { get; } = [];
+        public List<ProductSubCategory> ProductSubcategories { get; } = [];
 
     }
 }

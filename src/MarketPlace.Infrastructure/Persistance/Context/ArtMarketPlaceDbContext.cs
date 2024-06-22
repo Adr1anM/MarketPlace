@@ -1,4 +1,5 @@
-﻿using MarketPlace.Domain.Models;
+﻿using MarketPlace.Domain;
+using MarketPlace.Domain.Models;
 using MarketPlace.Domain.Models.Auth;
 using MarketPlace.Infrastructure.Persistance.Configurations;
 using MarketPlace.Infrastructure.Persistance.Constants;
@@ -15,13 +16,17 @@ namespace MarketPlace.Infrastructure.Persistance.Context
 
         }
 
-        public DbSet<Author> Authors { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Order> Orders { get; set; }    
+        public DbSet<Author> Authors { get; set; }
         public DbSet<Product> Products{ get; set; }
-        public DbSet<Promocode> Promocodes{ get; set; }
-        public DbSet<SubCategory> SubCategories{ get; set; }
-        public DbSet<AuthorCategory> AuthorCategories { get; set; } 
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Promocode> Promocodes { get; set; }
+        public DbSet<SubCategory> SubCategories { get; set; }
+        public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<AuthorCategory> AuthorCategories { get; set; }
+        public DbSet<ShoppingCartItem> ShoppingCartItems { get; set; }
+        public DbSet<ProductSubCategory> ProductSubCategories { get; set; }
+        public DbSet<CategorySubcategory> CategorySubcategories { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -29,7 +34,7 @@ namespace MarketPlace.Infrastructure.Persistance.Context
             base.OnModelCreating(builder);
             ApplyIdentityMapConfiguration(builder);
 
-            var assembly = typeof(CategSubCategConfig).Assembly;
+            var assembly = typeof(ProductSubCategoryConfig).Assembly;
             builder.ApplyConfigurationsFromAssembly(assembly);
         }
 

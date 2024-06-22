@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,6 @@ namespace MarketPlace.Application.Abstractions.Services
 {
     public interface IJwtProvider
     {
-        string GenerateJwtToken(int Id, string Email);
+        string GenerateJwtToken(int Id, string Email, IList<string> roles);
     }
 }

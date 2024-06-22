@@ -18,5 +18,10 @@ namespace MarketPlace.Application.App.Authors.Responses
         public DateTime BirthDate { get; set; }
         public string SocialMediaLinks { get; set; }
         public int NumberOfPosts { get; set; }
+        public string ProfileImage { get; set; }  
+        public string FirstName { get; set; }   
+        public string LastName { get; set; }   
+        public string Email { get; set; }   
+
     }
 }

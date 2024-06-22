@@ -16,6 +16,6 @@ namespace MarketPlace.Application.Exceptions
         {
             EntityType = entityType;
             EntityId = entityId;
-        }
+        }   
     }
 }
