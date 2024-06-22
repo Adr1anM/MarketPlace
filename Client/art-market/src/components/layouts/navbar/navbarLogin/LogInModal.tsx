@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { IconButton, InputAdornment } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
@@ -16,44 +15,20 @@ import ForgetPasswordModal from './ForgetPasswordModal';
 import '../../styles/LogInModalStyle.css'
 import RegisterModalForm from './RegisterModalForm';
 import toast from 'react-hot-toast';
+import LogInModel from './LogInModel';
+import { buttonStyle, fieldStyles, style, validationSchema } from './loginModalStyle';
+import useShoppingCart from '../../../../zsm/stores/useShoppingCart';
+import { Link } from 'react-router-dom';
 
-export interface LogInModel{
-  username: string;
-  password: string;
+interface LogInModalProps{
+  isOpened: boolean;
+  onClose: () => void;
+  title: string;
 }
 
-const validationSchema = Yup.object({
-  username: Yup.string().required('Username is required'),
-  password: Yup.string().required('Password is required'),
-});
-
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 350,
-  bgcolor: 'white',
-  boxShadow: 24,
-  p: 3,
-};
-
-
-const fieldStyles = {
-    backgroundColor: 'transparent',
-    boxShadow: 'none',
-
-}
-
-const buttonStyle = {
-    backgroundColor: 'white',
-    color: 'black',
-    outline: 'none',
-    height: '10px',
-}
-
-const LogInModal: React.FC = () => {
+const LogInModal: React.FC<LogInModalProps> = ({isOpened,onClose,title}) => {
   const { login , setUser } = useAuth();
+  const cartStore = useShoppingCart();
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [forgetPasswordModal, setForgetPasswordModal] = useState(false);
@@ -74,8 +49,15 @@ const LogInModal: React.FC = () => {
 
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  useEffect(() => {
+    setOpen(isOpened);
+  }, [isOpened]);
+  
+  
+  const handleClose = () =>{
+     setOpen(false);
+     onClose();
+  }
 
   const initialValues: LogInModel = {
     username: '',
@@ -94,6 +76,7 @@ const LogInModal: React.FC = () => {
           const user = userResponse.data;
           setUser(user);
           localStorage.setItem('user', JSON.stringify(user)); 
+          await cartStore.fetchCart(user.id);
       } catch (error) {
           console.error('Failed to fetch user details', error);
       }
@@ -110,9 +93,6 @@ const LogInModal: React.FC = () => {
 
   return (
     <div>
-      <Button style={{ textTransform: 'capitalize', fontSize: '17px' , outline: 'none', color: 'black' }} onClick={handleOpen}>
-        SignIn/Register
-      </Button>
       <Modal
         open={open}
         onClose={handleClose}
@@ -120,21 +100,21 @@ const LogInModal: React.FC = () => {
         aria-describedby="modal-for-login"
       >
         <Box sx={style}>
-            <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{
-                position: 'absolute',
-                right: 8,
-                top: 8,
-                color: (theme) => theme.palette.grey[500],
-                outline: 'none',
-            }}
-            >
+        <IconButton
+                    aria-label="close"
+                    onClick={handleClose}
+                    sx={{
+                        position: 'absolute',
+                        right: 8,
+                        top: 8,
+                        color: (theme) => theme.palette.grey[500],
+                        outline: 'none',
+                }}
+                >
                 <CloseIcon />
             </IconButton>
           <Typography id="modal-modal-title" variant="h5" style={{color: 'black' , marginBottom: '16px'}}>
-             Log in to collect art by the world’s leading artists
+             {title}
           </Typography>
           <Formik
             initialValues={initialValues}
@@ -144,7 +124,7 @@ const LogInModal: React.FC = () => {
             {({ isSubmitting, handleChange, handleBlur , touched, errors}) => (
               <Form>
                 <Box sx={{ '& .MuiTextField-root': {  marginBottom: '16px' } }}>
-                  <div>
+                  <Box>
                     <TextField
                       id="username"
                       label="Username"
@@ -158,8 +138,8 @@ const LogInModal: React.FC = () => {
                       helperText = {touched.username && errors.username}
                     />
                    
-                  </div>
-                  <div>
+                  </Box>
+                  <Box>
                     <TextField
                       id="password"
                       label="Password"
@@ -185,14 +165,16 @@ const LogInModal: React.FC = () => {
                         )
                       }}
                     />
-                  </div>
-                  <div style={{alignItems: 'center', display: 'flex', justifyContent: 'flex-end' ,marginRight: '5px'}}>
+                  </Box>
+                  <Box style={{alignItems: 'center', display: 'flex', justifyContent: 'flex-end' ,marginRight: '5px'}}>
                     <Button style={buttonStyle} onClick={handleforgetPasswordModalOpen}  variant="text">Forgot Password?</Button>     
-                  </div>
+                  </Box>
                   <br />
-                  <div style={{alignItems: 'center', display: 'flex', justifyContent: 'flex-end' ,marginRight: '5px'}}>
-                    <Button style={buttonStyle} onClick={handleRegisterModalOpen}  variant="text">Register</Button>     
-                  </div>
+                  <Box style={{alignItems: 'center', display: 'flex', justifyContent: 'flex-end' ,marginRight: '5px'}}>
+                    <Link to="/register" style={{ textDecoration: 'none' }}>
+                      <Button style={buttonStyle} onClick={() => onClose()} variant="text">Register</Button>
+                    </Link>         
+                  </Box>
                   <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
                     Submit
                   </Button>
@@ -204,7 +186,6 @@ const LogInModal: React.FC = () => {
       </Modal>
       <ForgetPasswordModal isOpened = {forgetPasswordModal} onClose={handleforgetPasswordModalClose}/>
       <RegisterModalForm isOpened = {registerModal} onClose={handleRegisterModalClose}/>
-
     </div>
   );
 };

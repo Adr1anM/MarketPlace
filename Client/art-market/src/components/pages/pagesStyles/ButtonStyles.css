@@ -1,0 +1,8 @@
+
+.buttonClass:hover{
+    outline: none;
+}
+
+.button:focus{
+    outline: none;
+}

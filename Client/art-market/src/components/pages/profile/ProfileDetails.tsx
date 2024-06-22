@@ -1,19 +1,18 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import { Author, User } from "../../../types/types";
-import { memo } from "react";
+import React, { memo } from "react";
 import '../pagesStyles/ProfilePage.css';
 import useArtworks from "../../../zsm/stores/useArtworks";
 
 interface ProfileDetailsProps {
     authorData: Author | null | undefined;
     isAuthorProfile: boolean | undefined;
-    user: User | null | undefined;
     handleBiographyChange: (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => void;
     editBio: boolean;
     handleSave: () => void;
   }
   
-const ProfileDetails = memo<ProfileDetailsProps>(({ authorData, isAuthorProfile, user, handleBiographyChange, editBio, handleSave }) => {
+const ProfileDetails:React.FC<ProfileDetailsProps>  = (({ authorData, isAuthorProfile, handleBiographyChange, editBio, handleSave }) => {
     
     const artworksStore = useArtworks();
 
@@ -44,14 +43,14 @@ const ProfileDetails = memo<ProfileDetailsProps>(({ authorData, isAuthorProfile,
                 {isAuthorProfile ?(
                 <Grid item xs={6}  md={12}>
                     <Typography className="grid-overall-num" align="left" variant="h4"  >
-                    {user?.firstName + " " + user?.lastName}
+                    {authorData?.firstName + " " + authorData?.lastName}
                     </Typography>
                 </Grid>
                 ):(
                     <Grid container>
                     <Grid item xs={6}  md={9}>
                         <Typography className="grid-overall-num" align="left" variant="h4"  >
-                        {user?.firstName + " " + user?.lastName}
+                        {authorData?.firstName + " " + authorData?.lastName}
                         </Typography>
                     </Grid>
                     <Grid item xs={6} md={3}>

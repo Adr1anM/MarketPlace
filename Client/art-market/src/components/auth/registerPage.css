@@ -1,0 +1,28 @@
+.main-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+}
+
+.logo-grid-item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.main-form-box{
+    padding: 2rem;
+    height: 100%;
+    max-height: calc(100vh - 4rem); 
+    overflow-y: auto;
+}

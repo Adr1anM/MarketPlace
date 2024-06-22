@@ -2,6 +2,7 @@ import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import toast from 'react-hot-toast';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -13,6 +14,7 @@ const VisuallyHiddenInput = styled('input')({
   left: 0,
   whiteSpace: 'nowrap',
   width: 1,
+  accept:"image/jpeg,image/png,image/gif,image/bmp,image/tiff,image/webp,image/svg+xml"
 });
 
 interface InputFileUploadProps {
@@ -24,7 +26,12 @@ const InputFileUpload: React.FC<InputFileUploadProps> = ({ onUpload }) => {
     const fileList = event.target.files;
     if (fileList && fileList.length > 0) {
       const file = fileList[0];
-      onUpload(file); 
+      if(file.type.startsWith("image/")){
+        onUpload(file);
+      }else{
+        toast.error("Please upload a valid image file.");
+      }
+      
     }
   };
 
@@ -32,6 +39,7 @@ const InputFileUpload: React.FC<InputFileUploadProps> = ({ onUpload }) => {
     <Button
       component="label"
       role={undefined}
+
       variant="contained"
       startIcon={<CloudUploadIcon />}
     >

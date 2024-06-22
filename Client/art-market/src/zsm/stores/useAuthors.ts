@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import axios from "../../configurations/axios/axiosConfig";
-import { Author } from "../../types/types";
+import { Author, AuthorData, AuthorNames } from "../../types/types";
 import { base64ToFile } from "./Converter";
 
 
@@ -12,25 +12,42 @@ const INITIAL_AUTHOR_STATE: Author = {
   birthDate: '',
   socialMediaLinks: '',
   numberOfPosts: 0,
-  profileImage: ''
+  profileImage: '',
+  firstName: '',
+  lastName: '',
+  email: ''
 };
+
+
+const INITIAL_CREATE_AUTHOR_STATE: AuthorData ={
+  userId: 0,
+  biography: '',
+  country: '',
+  birthDate: '',
+  socialMediaLinks: '',
+  numberOfPosts: 0,
+  phoneNumber: '',
+  profileImage:  '',
+} 
 
 // State type for authors
 type TAuthor = typeof INITIAL_AUTHOR_STATE;
+type TCreateAuthor = typeof INITIAL_CREATE_AUTHOR_STATE;
 type TAuthors = {
   authors: TAuthor[];
   loading: boolean;
 };
-
 
 // Actions type for authors
 type TAuthorsActions = {
   setInitialAuthors: (authors: TAuthor[]) => void;
   deleteAuthorById: (id: number) => void;
   fetchAuthors: () => void;
+  fetchAllCountries: () => Promise<string[] | null>;
+  fetchAllAuthorNames: () => Promise<AuthorNames[] | null>;
   fetchAuthorById: (id: number) => Promise<TAuthor | null>;
   fetchAuthorByUserId: (id:number) => Promise<TAuthor | null>;
-  createAuthor: (author: Omit<TAuthor, 'id'>) => Promise<void>;
+  createAuthor: (author: TCreateAuthor) => Promise<void>;
   updateAuthor: (author: TAuthor) => Promise<void>;
 };
 
@@ -93,6 +110,26 @@ const useAuthors = create<TAuthors & TAuthorsActions & TAuthorsGetter>((set, get
     }
   },
 
+  fetchAllCountries: async () => {
+    try {
+      const response = await axios.get('/Authors/countries');
+      return response.data as string[];
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+
+  fetchAllAuthorNames: async () => {
+    try {
+      const response = await axios.get('/Authors/names');
+      return response.data as AuthorNames[];
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+
   fetchAuthorByUserId: async (id) => {
     try {
       const response = await axios.get(`/Authors/by-user/${id}`);
@@ -105,7 +142,38 @@ const useAuthors = create<TAuthors & TAuthorsActions & TAuthorsGetter>((set, get
 
   createAuthor: async (author) => {
     try {
-      const response = await axios.post('/Authors', author);
+      const formData = new FormData();
+      formData.append('UserId', author.userId.toString());
+      formData.append('Biography', author.biography);
+      formData.append('Country', author.country);
+      const dateObject = new Date(author.birthDate); 
+      formData.append('BirthDate', dateObject.toISOString());
+      formData.append('SocialMediaLinks', author.socialMediaLinks);
+      formData.append('NumberOfPosts', author.numberOfPosts.toString());
+      formData.append('PhoneNumber', author.phoneNumber);
+
+      
+      if (typeof author.profileImage === 'string' ) {
+        const mimeType = 'image/jpeg'; 
+        console.log('Base64 String:', author.profileImage);
+        const file = base64ToFile(author.profileImage, mimeType); 
+        formData.append('ProfileImage', file);
+      } else if (author.profileImage instanceof File) {
+        console.log('it is a file:', author.profileImage);
+        formData.append('ProfileImage', author.profileImage);
+      }
+      
+      console.log("The object to be sent");
+      console.log('FormData Contents:');
+      for (const [key, value] of formData.entries()) {
+          console.log(`${key}: ${value}`);
+      } 
+      const response = await axios.post('/Authors', formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data',
+          },
+      });
+
       set((state) => ({
         ...state,
         authors: [...state.authors, response.data],

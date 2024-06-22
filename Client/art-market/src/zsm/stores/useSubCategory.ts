@@ -5,24 +5,25 @@ import axios from "../../configurations/axios/axiosConfig";
 
 // State type
 type TSubCategoriesState = {
-    categories: Category[];
+  subCategories: Category[];
     loading: boolean;
   };
   
   // Actions type
   type TSubCategoriesActions = {
-    fetchCategories: () => void;
+    fetchSubCategories: () => void;
+    fetchSubCategoriesByCategId: (id:number) => void;
     
   };
   
   // Getter type
   type TSubCategoriesGetter = {
-    getCategories: () => SubCategory[];
-    getCategoryById: (id: number) => Category | null;
+    getSubCategories: () => SubCategory[];
+    getSubCategoryById: (id: number) => Category | null;
   };
   
   const INITIAL_CATEGORIES_STATE: TSubCategoriesState = {
-    categories: [],
+    subCategories: [],
     loading: false,
   };
 
@@ -30,11 +31,23 @@ type TSubCategoriesState = {
   const useSubCategories = create<TSubCategoriesState & TSubCategoriesActions & TSubCategoriesGetter>((set, get) => ({
     ...INITIAL_CATEGORIES_STATE,
   
-    fetchCategories: async () => {
+    fetchSubCategories: async () => {
       try {
         set((state) => ({ ...state, loading: true }));
-        const response = await axios.get('/Product/subcategories'); 
-        set((state) => ({ ...state, categories: response.data }));
+        const response = await axios.get('/LookUp/subcategories'); 
+        set((state) => ({ ...state, subCategories: response.data }));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        set((state) => ({ ...state, loading: false }));
+      }
+    },
+
+    fetchSubCategoriesByCategId: async (id:number) => {
+      try {
+        set((state) => ({ ...state, loading: true }));
+        const response = await axios.get(`/LookUp/subcategories/${id}`); 
+        set((state) => ({ ...state, subCategories: response.data }));
       } catch (error) {
         console.error(error);
       } finally {
@@ -42,12 +55,12 @@ type TSubCategoriesState = {
       }
     },
   
-    getCategories: () => {
-      return get().categories;
+    getSubCategories: () => {
+      return get().subCategories;
     },
   
-    getCategoryById: (id: number) => {
-      return get().categories.find((category) => category.id === id) || null;
+    getSubCategoryById: (id: number) => {
+      return get().subCategories.find((category) => category.id === id) || null;
     },
   }));
   

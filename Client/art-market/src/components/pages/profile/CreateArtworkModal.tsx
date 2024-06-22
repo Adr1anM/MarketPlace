@@ -15,7 +15,7 @@ import {
     OutlinedInput,
     MenuItem,
   } from "@mui/material";
-  import { Category, CreateArtwork } from "../../../types/types";
+  import { Category, CategoryWithSubcategories, CreateArtwork } from "../../../types/types";
   import { memo, useEffect, useState } from "react";
   import CloseIcon from '@mui/icons-material/Close';
   import InputFileUpload from "./InputFileUpload";
@@ -88,8 +88,6 @@ import {
       setCategory(''); 
       setErrors({}); 
     };
-
-    console.log("AuthorId createmodal",authorID);
   
     const [subCategoryName, setSubCategoryName] = React.useState<string[]>([]);
     const [selectedSubCategoryIds, setSelectedSubCategoryIds] = useState<number[]>([]);
@@ -100,12 +98,12 @@ import {
       setCategory(event.target.value);
       setNewArtwork((prevArtwork) => ({
         ...prevArtwork,
-        categoryID: categoryStore.categories.find(categ => categ.name === event.target.value)?.id || 0,
+        categoryID: categoryStore.categories.find(categ => categ.categoryName === event.target.value)?.categoryId || 0,
       }));
     };
   
     useEffect(() => {
-      subCategoryStore.fetchCategories();
+      subCategoryStore.fetchSubCategories();
       categoryStore.fetchCategories();
     }, []);
   
@@ -116,7 +114,7 @@ import {
       const selectedCategoryNames = typeof value === "string" ? value.split(",") : value
   
       const selectedCategoryIds = selectedCategoryNames.map((subCategoryName) => {
-        const category = subCategoryStore.categories.find((cat) => cat.name === subCategoryName);
+        const category = subCategoryStore.subCategories.find((subCat) => subCat.name === subCategoryName);
         return category ? category.id : null;
       }).filter(id => id !== null) as number[];
   
@@ -291,7 +289,7 @@ import {
               required
             />
   
-            <FormControl sx={{ marginTop: '15px', width: 300 }} error={!!errors.category}>
+  <FormControl sx={{ marginTop: "15px", width: 300 }} error={!!errors.category}>
               <InputLabel id="demo-simple-select-helper-label">Category</InputLabel>
               <Select
                 labelId="demo-simple-select-helper-label"
@@ -301,17 +299,15 @@ import {
                 onChange={handleCategoryChange}
                 required
               >
-                {categoryStore.categories.map((categ: Category) => (
-                  <MenuItem
-                    key={categ.id}
-                    value={categ.name}
-                   
-                  >
-                    {categ.name}
+                {categoryStore.getCategories().map((categ: CategoryWithSubcategories) => (
+                  <MenuItem key={categ.categoryId} value={categ.categoryName}>
+                    {categ.categoryName}
                   </MenuItem>
                 ))}
               </Select>
-              {errors.category && <Typography color="error">{errors.category}</Typography>}
+              {errors.category && (
+                <Typography color="error">{errors.category}</Typography>
+              )}
             </FormControl>
   
             <FormControl sx={{ marginTop: '25px', width: 300 }} error={!!errors.subCategories}>
@@ -326,7 +322,7 @@ import {
                 MenuProps={MenuProps}
                 required
               >
-                {subCategoryStore.categories.map((category: Category) => (
+                {subCategoryStore.subCategories.map((category: Category) => (
                   <MenuItem
                     key={category.id}
                     value={category.name}

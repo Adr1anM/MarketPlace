@@ -14,13 +14,15 @@ import ArtworkList from './profile/ArtworkList';
 import ProfileAvatar from './profile/Avatar';
 import EditIcon from '@mui/icons-material/Edit';
 import CreateArtworkModal from './profile/CreateArtworkModal';
+import useCategories from '../../zsm/stores/useCategory';
 
 const ProfilePage = () => {
 
   const {isLoggedIn,user} = useAuth();
   const { authorId } = useParams();
   const artworksStore = useArtworks();
-  const authorStore = useAuthors();
+  const authorStore = useAuthors(); 
+  const categoryStore = useCategories();
 
   const isAuthorProfile = user?.roles.includes("Author") && !authorId && isLoggedIn;
 
@@ -31,13 +33,16 @@ const ProfilePage = () => {
   const [editBio, setEditBio] = useState(false);
   const [createArtworkModal, setCreateArtworkModal] = useState(false);
 
-  
+  console.log("user",user);
+  console.log("author id from params",authorId);
+  console.log("isAuthorProfile",isAuthorProfile);
+
   useEffect(() => {
     const fetchAuthorData = async () => {
       try {
         if (isAuthorProfile) {
           if (user?.id) {  
-  
+
             const auth = await authorStore.fetchAuthorByUserId(user.id);
             console.log("id", user.id);
             console.log("Author", auth);
@@ -47,10 +52,10 @@ const ProfilePage = () => {
         } else if (authorId) {
           const parsedAuthorId = parseInt(authorId);
           if (!isNaN(parsedAuthorId)) { 
-            const auth = await authorStore.fetchAuthorByUserId(parsedAuthorId);
+            const auth = await authorStore.fetchAuthorById(parsedAuthorId);
+            console.log("Author", auth);
             setAuthorData(auth);
             setOriginalAuthorData(auth);
-            console.log("Parsed id",parsedAuthorId);
           }
         }
       } catch (error) {
@@ -72,7 +77,15 @@ const ProfilePage = () => {
     fetchArtworks();
   }, [authorData,isLoggedIn]);
 
+                                                                                           
+  useEffect(() => {
+    const fetchCategories = async () =>{
+      await categoryStore.fetchCategories();
+    };
+    fetchCategories()
+  },[]);
 
+  console.log("categories", categoryStore.categories);
   useEffect(() => {
     const artwork = artworksStore.getArtworkById(8);
     console.log("Artwork",artwork);
@@ -193,13 +206,12 @@ const ProfilePage = () => {
         )}    
           <ProfileDetails
               authorData={authorData}
-              isAuthorProfile={isAuthorProfile}
-              user={user}
+              isAuthorProfile={isAuthorProfile}            
               handleBiographyChange={handleBiographyChange}
               editBio={editBio}
               handleSave={handleSave}
           />
-          <ArtworkList artworksStore={artworksStore}  handleDelete={handleDelete} user={user} />
+          <ArtworkList artworks={Array.isArray(artworksStore.artworks) ? artworksStore.artworks : []}  handleDelete={handleDelete} user={user} />
           <br />
         </Card>
       </Box>

@@ -7,39 +7,85 @@ import {NavLink} from 'react-router-dom'
 import { useAuth } from '../../../contexts/AuthContext';
 import ProfileMenu from './navbarLogin/ProfileMenu';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { Badge, BadgeProps, Box, Button, IconButton, Link, Typography, styled } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import "../../../components/pages/pagesStyles/ButtonStyles.css"
+import RegistrationPage from '../../auth/RegisterPage';
+import { Link as RouterLink } from 'react-router-dom'; 
+import useShoppingCart from '../../../zsm/stores/useShoppingCart';
 
+
+const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -3,
+    top: 13,
+    border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+  },
+}));
 
 const NavBar: React.FC = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
+  const { getCartItemCount } = useShoppingCart();
+  const itemCount = getCartItemCount();
   const [showArtistsMegaMenu, setShowArtistsMegaMenu] = useState(false);
   const [showArtworksMegaMenu, setShowArtworksMegaMenu] = useState(false);
+  const [loginModal, setloginModal] = useState(false);
 
+  
+
+  const handleArtworkLinkClick = (priceRange: string) => {
+    const pageIndex = 0; 
+    const queryString = `?pageIndex=${pageIndex}&priceRange=${priceRange}`;
+
+    navigate(`/artworks${queryString}`);
+  };
+  
 
   function handleLoggOut(){
     toast.success("Logged Out")
     logout();
   }
   
+  function handleOpen() {
+    setloginModal(true);
+  }
+
+  function handleLoginModalClose() {
+    setloginModal(false);
+  }
+
   return (
-      <div className="header-menu-wrapper-desktop" style={{backgroundColor: "red"}}>
+      <Box className="header-menu-wrapper-desktop" style={{backgroundColor: "red"}}>
         <header className="artshop-header" >
-          <div className="header-content">
-            <div className="header-title">
+          <Box className="header-content">
+            <Box className="header-title">
               <NavLink style={{color: 'black' , fontWeight: '700'}} to="/home">ArtIs</NavLink>
-            </div>
-            <div className="header-search-wrapper">
+            </Box>
+            <Box className="header-search-wrapper">
               <input className="search-input" type="text" placeholder="Search..." />
-            </div>
-            <div className="signin-section">
-              <LogInModal />
-            </div>
-          </div>
+            </Box>
+            <Box  marginRight={5}>
+              <IconButton href='/shopping-cart' className = "button" aria-label="cart">
+                <StyledBadge badgeContent={itemCount} color="secondary">
+                 <ShoppingCartIcon />
+                </StyledBadge>
+              </IconButton>
+            </Box>
+            <Box className="signin-section">
+              <Button style={{ textTransform: 'capitalize', fontSize: '17px' , outline: 'none', color: 'black' }} onClick={handleOpen}>
+                SignIn/Register
+              </Button>
+            </Box>
+          </Box>
           <ProfileMenu handleLogout={handleLoggOut} />
         </header>
         <nav className="nav">
-          <div className="nav-container">
-            <div className="nav-container-section">
-              <div 
+          <Box className="nav-container">
+            <Box className="nav-container-section">
+              <Box 
                 className="nav-content" 
                 onMouseEnter={() => setShowArtistsMegaMenu(true)}
                 onMouseLeave={() => setShowArtistsMegaMenu(false)}
@@ -47,10 +93,10 @@ const NavBar: React.FC = () => {
               >
                 <NavLink to="/artists">Artists</NavLink>
                 {showArtistsMegaMenu && (
-                  <MegaMenu sections={artistsSections} className="artists-megamenu" isOpen={showArtistsMegaMenu} />
+                  <MegaMenu sections={artistsSections} className="artists-megamenu" isOpen={showArtistsMegaMenu} handleArtworkLinkClick={handleArtworkLinkClick} />
                 )}
-              </div>
-              <div 
+              </Box>
+              <Box 
                 className="nav-content" 
                 onMouseEnter={() => setShowArtworksMegaMenu(true)}
                 onMouseLeave={() => setShowArtworksMegaMenu(false)}
@@ -58,22 +104,23 @@ const NavBar: React.FC = () => {
               >
                 <NavLink to="/artworks">Artworks</NavLink>
                 {showArtworksMegaMenu && (
-                  <MegaMenu sections={artworksSections} className="artworks-megamenu" isOpen={showArtworksMegaMenu} />
+                  <MegaMenu className="artworks-megamenu" handleArtworkLinkClick={handleArtworkLinkClick} sections={artworksSections}  isOpen={showArtworksMegaMenu} />
                 )}
-              </div>
-                  <div className="nav-content" ><NavLink to="/collections">Collections</NavLink></div>
-                  <div className="nav-content" ><NavLink to="/auctions">Auctions</NavLink></div>
-              </div>
+              </Box>
+                  <Box className="nav-content" ><NavLink to="/collections">Collections</NavLink></Box>
+                  <Box className="nav-content" ><NavLink to="/auctions">Auctions</NavLink></Box>
+              </Box>
 
-              <div className="nav-container-section">
-                  <div className="nav-content" ><NavLink to="/buy-art">Buy Art</NavLink></div>
-                  <div className="nav-content" ><NavLink to="/media">Media</NavLink></div>
-                  <div className="nav-content" ><NavLink to="/seller">Seller</NavLink></div>
-                  <div className="nav-content" ><NavLink to="/about-us">About-Us</NavLink></div>
-              </div>
-          </div>                   
+              <Box className="nav-container-section">
+                  <Box className="nav-content" ><NavLink to="/buy-art">Buy Art</NavLink></Box>
+                  <Box className="nav-content" ><NavLink to="/media">Media</NavLink></Box>
+                  <Box className="nav-content" ><NavLink to="/seller">Seller</NavLink></Box>
+                  <Box className="nav-content" ><NavLink to="/about-us">About-Us</NavLink></Box>
+              </Box>
+          </Box>                   
         </nav>
-      </div>
+        <LogInModal isOpened={loginModal} onClose={handleLoginModalClose} title='Log in to collect art by the world’s leading artists'/>
+      </Box>
   );
 };
 

@@ -10,7 +10,7 @@ export const AuthProvider: FC<{children: ReactNode}> = ({children}) => {
     const [token, setToken] = useState<string | null>(null);
     const [isLoggedIn, setLoggedIn] = useState(() => !!localStorage.getItem('token'));
 
-    const [user, setUser] = useState<User | undefined>(() => {
+    const [user, setUser] = useState<User | undefined >(() => {
       const storedUser = localStorage.getItem('user');
       return storedUser ? JSON.parse(storedUser) : undefined;
     });
@@ -44,6 +44,7 @@ export const AuthProvider: FC<{children: ReactNode}> = ({children}) => {
 
         delete axios.defaults.headers.common['Authorization'];
         setLoggedIn(false);
+        setUser(undefined);
     }
 
  

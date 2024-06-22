@@ -29,7 +29,7 @@ type TArtworks = {
 };
 
 type TPagedArtworks = {
-  artworks: Artwork[];
+  artworks: TArtwork[];
   loading: boolean;
   pageIndex: number;
   pageSize: number;
@@ -82,10 +82,11 @@ const useArtworks = create<TArtworks & TArtworksActions & TArtworksGetter & { pa
     }
   },
   
+  
   fetchArtworks: async () => {
     try {
       set((state) => ({ ...state, loading: true }));
-      const response = await axios.get('/Product/all');
+      const response = await axios.get('/Products');
       set((state) => ({ ...state, artworks: response.data }));
     } catch (error) {
       console.error(error);
@@ -97,7 +98,7 @@ const useArtworks = create<TArtworks & TArtworksActions & TArtworksGetter & { pa
   fetchPagedArtworks: async (pagedRequest: PagedRequest) =>  {
     try {
       set((state) => ({ ...state, loading: true }));
-      const response = await axios.post('/Product/paged', pagedRequest);
+      const response = await axios.post('/Products/paged', pagedRequest);
       const pagedResult = response.data;
       set((state) => ({ 
         ...state,
@@ -119,7 +120,7 @@ const useArtworks = create<TArtworks & TArtworksActions & TArtworksGetter & { pa
   fetchArtworksByAuthorId: async (id: number) => {
     try {
       set((state) => ({ ...state, loading: true }));
-      const response = await axios.get(`/Product/all/${id}`);
+      const response = await axios.get(`/Products/by-author/${id}`);
       set((state) => ({ ...state, artworks: response.data }));
     } catch (error) {
       console.error(error);
@@ -130,7 +131,7 @@ const useArtworks = create<TArtworks & TArtworksActions & TArtworksGetter & { pa
 
   fetchArtworkById: async (id) => {
     try {
-      const response = await axios.get(`/Product/${id}`);
+      const response = await axios.get(`/Products/${id}`);
       return response.data as TArtwork;
     } catch (error) {
       console.error(error);
@@ -159,7 +160,7 @@ const useArtworks = create<TArtworks & TArtworksActions & TArtworksGetter & { pa
       } else if (artwork.imageData instanceof File) {
         formData.append('ImageData', artwork.imageData);
       }
-      const response = await axios.post('/Product', formData, {
+      const response = await axios.post('/Products', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -208,7 +209,7 @@ const useArtworks = create<TArtworks & TArtworksActions & TArtworksGetter & { pa
       for (const [key, value] of formData.entries()) {
           console.log(`${key}: ${value}`);
       } 
-      await axios.put('/Product', formData, {
+      await axios.put('/Products', formData, {
           headers: {
               'Content-Type': 'multipart/form-data',
           },

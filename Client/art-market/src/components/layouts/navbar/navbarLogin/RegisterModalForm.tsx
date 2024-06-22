@@ -7,12 +7,14 @@ import TextField from '@mui/material/TextField';
 import { Formik, Form, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { IconButton, InputAdornment } from '@mui/material';
+import { Checkbox, FormControlLabel, IconButton, InputAdornment, Stack } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuth } from '../../../../contexts/AuthContext';
 import axios from '../../../../configurations/axios/axiosConfig'; 
 import '../../styles/LogInModalStyle.css'
+import InputFileUpload from '../../../pages/profile/InputFileUpload';
+import { Author } from '../../../../types/types';
 
 interface RegisterData {
   firstName: string;
@@ -20,6 +22,7 @@ interface RegisterData {
   userName: string;
   email: string;
   password: string;
+  role: string;
 }
 
 interface RegisterCommand {
@@ -72,6 +75,9 @@ const RegisterModalForm: React.FC<RegisterModalProps> = ({isOpened,onClose}) => 
   const { login } = useAuth();
   const [open, setOpen] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [registerAsAuthor, setRegisterAsAuthor] = useState(false);
+  const [authorData, setAuthorData] = useState<Author | null>();
+
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
@@ -85,20 +91,24 @@ const RegisterModalForm: React.FC<RegisterModalProps> = ({isOpened,onClose}) => 
     onClose();
   }
 
+  
 
   const initialValues: RegisterData = {
       firstName: '',
       lastName: '',
       userName: '',
       email: '',
-      password: ''
+      password: '',
+      role: 'User'
   };
 
   const handleRegister = async (values: RegisterData, { setErrors, setSubmitting, resetForm }: FormikHelpers<RegisterData>) => {
 
+    const role = registerAsAuthor ? 'Author' : 'User';
     const registerCommand: RegisterCommand = {
-      registerData: { ...values }
+      registerData: { ...values, role }
     };
+
     console.log("register", registerCommand);
     setSubmitting(true);
     try {
@@ -129,6 +139,23 @@ const RegisterModalForm: React.FC<RegisterModalProps> = ({isOpened,onClose}) => 
     }
   };
 
+  const handleUpload = (file: File) => {
+    try {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const base64String = reader.result as string;
+        const updatedEntity = {
+          ...authorData!,
+          profileImage: base64String.replace(/^data:image\/[a-z]+;base64,/, "")
+        };
+        setAuthorData(updatedEntity);
+      };
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+  };
+
   return (
     <div>
       <Modal
@@ -154,6 +181,40 @@ const RegisterModalForm: React.FC<RegisterModalProps> = ({isOpened,onClose}) => 
           <Typography id="modal-modal-title" variant='h4' style={{color: 'black' , marginBottom: '16px'}}>
             Register
           </Typography>
+
+
+          {(registerAsAuthor && authorData?.profileImage) &&
+            <Box
+              component="img"
+              sx={{
+                height: 200,
+                width: 200, 
+                objectFit: 'cover'
+              }}
+              alt="The house from the offer."
+              src={`data:image/jpeg;base64,${authorData?.profileImage?.toString()}`}
+            />
+          }
+          {registerAsAuthor && !authorData?.profileImage &&
+            <Box
+              component="img"
+              sx={{
+                height: 200,
+                width: 200,
+                objectFit: 'cover'
+              }}
+              alt="The house from the offer."
+              src={"https://t4.ftcdn.net/jpg/05/17/53/57/360_F_517535712_q7f9QC9X6TQxWi6xYZZbMmw5cnLMr279.jpg"}
+            />
+          }
+         {registerAsAuthor &&
+          <Box>
+            <Stack sx={{ marginTop: '15px' }} direction="row" gap="10px">
+              <Button>Delete</Button>
+              <InputFileUpload onUpload={handleUpload} />
+            </Stack>
+          </Box>
+        }
           <Formik
             initialValues={initialValues}
             validationSchema={validationSchema}
@@ -245,6 +306,19 @@ const RegisterModalForm: React.FC<RegisterModalProps> = ({isOpened,onClose}) => 
                           </InputAdornment>
                         )
                       }}
+                    />
+                  </div>
+                  <div>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={registerAsAuthor}
+                          onChange={(e) => setRegisterAsAuthor(e.target.checked)}
+                          name="registerAsAuthor"
+                          color="primary"
+                        />
+                      }
+                      label="Register as Author"
                     />
                   </div>
                   <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>

@@ -14,7 +14,7 @@ import {
   OutlinedInput, 
   MenuItem, 
 }  from "@mui/material";
-import { Artwork, Category } from "../../../types/types";
+import { Artwork, Category, SubCategory } from "../../../types/types";
 import { memo, useEffect, useState } from "react";
 import CloseIcon from '@mui/icons-material/Close';
 import InputFileUpload from "./InputFileUpload";
@@ -68,35 +68,46 @@ const EditArtworkModal = memo<EditArtworkModalProps>(({ open, onClose, artwork }
   );
 
   const [category, setCategory] = React.useState("");
+    const [categoryId, setCategoryId] = React.useState<number | undefined>(
+      artwork.categoryID
+    );
 
-  const handleCategoryChange = (event: SelectChangeEvent) => {
-    setCategory(event.target.value);
-    setUpdatedArtwork((prevArtwork) => ({
-      ...prevArtwork,
-      categoryID: categoryStore.categories.find(categ => categ.name === event.target.value)?.id || 0,
-    }));
-  };
+    const handleCategoryChange = (event: SelectChangeEvent) => {
+      const selectedCategoryName = event.target.value as string;
+      setCategory(selectedCategoryName);
 
-  
-  useEffect(() => {
-    subCategoryStore.fetchCategories(); 
-    categoryStore.fetchCategories()
-  }, []);
+      const selectedCategoryId =
+        categoryStore.categories.find(
+          (categ) => categ.categoryName === selectedCategoryName
+        )?.categoryId || 0;
+      setCategoryId(selectedCategoryId);
 
-  useEffect(() => {
-    if (artwork.subCategoryIds) {
-      const initialSelectedNames = artwork.subCategoryIds.map((id) => {
-        const category = subCategoryStore.categories.find((cat) => cat.id === id);
-        return category ? category.name : "";
-      });
-      setSubCategoryName(initialSelectedNames);
-    }
+      setUpdatedArtwork((prevArtwork) => ({
+        ...prevArtwork,
+        categoryID: selectedCategoryId,
+      }));
+    };
 
-    if (artwork.categoryID) {
-      const initialCategory = categoryStore.categories.find((cat) => cat.id === artwork.categoryID)?.name || '';
-      setCategory(initialCategory);
-    }
-  }, [artwork,, subCategoryStore.categories,categoryStore.categories]);
+    useEffect(() => {
+      if (artwork.subCategoryIds) {
+        const initialSelectedNames = artwork.subCategoryIds.map((id) => {
+          const category = subCategoryStore.subCategories.find(
+            (cat) => cat.id === id
+          );
+          return category ? category.name : "";
+        });
+        setSubCategoryName(initialSelectedNames);
+      }
+
+      if (artwork.categoryID) {
+        const initialCategory =
+          categoryStore.categories.find((cat) => cat.categoryId === artwork.categoryID)
+            ?.categoryName || "";
+        setCategory(initialCategory);
+        setCategoryId(artwork.categoryID);
+      }
+    }, [artwork, subCategoryStore.subCategories, categoryStore.categories]);
+
 
 
   const handleChangee = (event: SelectChangeEvent<typeof subCategoryName>) => {
@@ -106,7 +117,7 @@ const EditArtworkModal = memo<EditArtworkModalProps>(({ open, onClose, artwork }
     const selectedCategoryNames = typeof value === "string" ? value.split(",") : value
 
     const selectedCategoryIds = selectedCategoryNames.map((subCategoryName) => {
-      const category = subCategoryStore.categories.find((cat) => cat.name === subCategoryName);
+      const category = subCategoryStore.subCategories.find((subCat) => subCat.name === subCategoryName);
       return category ? category.id : null;
     }).filter(id => id !== null) as number[];
 
@@ -250,48 +261,53 @@ const handleUpload = (file: File) => {
           margin="normal"
         />
 
-        <FormControl sx={{  marginTop: '15px', width: 300 }}>
-          <InputLabel id="demo-simple-select-helper-label">Category</InputLabel>
-          <Select
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
-            value={category}
-            label="Category"
-            onChange={handleCategoryChange}
-          >
-            {categoryStore.categories.map((categ: Category ) =>(
-              <MenuItem
-                key={categ.id}
-                value={categ.name}
+            <FormControl sx={{ marginTop: "15px", width: 300 }}>
+              <InputLabel id="demo-simple-select-helper-label">
+                Category
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={category}
+                label="Category"
+                onChange={handleCategoryChange}
               >
-                {categ.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+                {categoryStore.getCategoryIdsAndNames().map((categ) => (
+                  <MenuItem key={categ.id} value={categ.name}>
+                    {categ.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
 
-        <FormControl sx={{ marginTop: '25px', width: 300 }}>
-          <InputLabel id="demo-multiple-name-label">SubCategory</InputLabel>
-          <Select
-            labelId="demo-multiple-name-label"
-            id="demo-multiple-name"
-            multiple
-            value={subCategoryName}
-            onChange={handleChangee}
-            input={<OutlinedInput label="Name" />}
-            MenuProps={MenuProps}
-          >
-            {subCategoryStore.categories.map((category: Category) => (
-                <MenuItem
-                  key={category.id}
-                  value={category.name}
-                  style={getStyles(category.name, subCategoryName, theme)}
-                >
-                  {category.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            <FormControl sx={{ marginTop: "25px", width: 300 }}>
+              <InputLabel id="demo-multiple-name-label">SubCategory</InputLabel>
+              <Select
+                labelId="demo-multiple-name-label"
+                id="demo-multiple-name"
+                multiple
+                value={subCategoryName}
+                onChange={handleChangee}
+                input={<OutlinedInput label="Name" />}
+                MenuProps={MenuProps}
+              >
+                {categoryStore
+                  .getSubcategoriesForCategory(categoryId)
+                  .map((subcategory) => (
+                    <MenuItem
+                      key={subcategory.id}
+                      value={subcategory.name}
+                      style={getStyles(
+                        subcategory.name,
+                        subCategoryName,
+                        theme
+                      )}
+                    >
+                      {subcategory.name}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
         <Button sx={{marginTop: '15px',width: '50px'}} onClick={handleSubmit} variant="contained" color="primary">
           Update
         </Button>

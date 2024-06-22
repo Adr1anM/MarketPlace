@@ -10,6 +10,9 @@ import ArtistsPage from './components/pages/ArtistsPage.tsx';
 import HomePage from './components/pages/HomePage'
 import ProfilePage from './components/pages/ProfilePage.tsx';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import DetailedArtworkPage from './components/pages/DetailedArtworkPage.tsx';
+import RegisterPage from './components/auth/RegisterPage.tsx';
+import ShoppingCartPage from './components/pages/ShoppingCartPage.tsx';
 
 const router = createBrowserRouter([{
   path: '/',
@@ -35,6 +38,22 @@ const router = createBrowserRouter([{
     {
       path: '/profile/:id?',
       element: <ProfilePage />,
+    },
+    {
+      path: '/register',
+      element: <RegisterPage />,
+    },
+    {
+      path: "/artwork/:id",
+      element: <DetailedArtworkPage/>
+    },
+    {
+      path: "/author/:authorId",
+      element: <ProfilePage/>
+    },
+    {
+      path: '/shopping-cart',
+      element: <ShoppingCartPage />, 
     },
     {
       path: '*',
